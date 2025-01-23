@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { Pause } from './timer';
+import { Pause } from '../../types';
 
 interface Props {
   isTimerReady: boolean;
@@ -11,7 +10,7 @@ interface Props {
   setRepeat: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Controller = ({
+export function Controller({
   isTimerReady,
   play,
   pause,
@@ -19,15 +18,15 @@ export const Controller = ({
   setPlay,
   setPause,
   setRepeat,
-}: Props) => {
-  const handleClickPlay = () => {
+}: Props) {
+  const playTimer = () => {
     if (!isTimerReady) return;
 
     setPlay(true);
     setPause('unpaused');
   };
 
-  const handleClickPause = () => {
+  const pauseTimer = () => {
     setPlay(false);
     setPause('paused');
   };
@@ -41,12 +40,12 @@ export const Controller = ({
         paddingBlock: '5px',
       }}
     >
-      <button disabled={!isTimerReady || play} onClick={handleClickPlay}>
+      <button disabled={!isTimerReady || play} onClick={playTimer}>
         start
       </button>
       <button
         disabled={pause === 'paused' || pause === null}
-        onClick={handleClickPause}
+        onClick={pauseTimer}
       >
         pause
       </button>
@@ -78,4 +77,4 @@ export const Controller = ({
       </div>
     </div>
   );
-};
+}

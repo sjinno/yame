@@ -1,12 +1,16 @@
-import { invoke } from '@tauri-apps/api/core';
 import { useEffect, useState } from 'react';
 import { Label } from './label';
 import { Hms } from './hms';
 import { Controller } from './controller';
+import { Pause } from '../../types';
+import { useDebounce } from '../../hooks';
 
-export type Pause = 'paused' | 'unpaused' | null;
+interface Props {
+  id: string;
+  onRemove: () => void;
+}
 
-export const Timer = () => {
+export function Timer({ id, onRemove }: Props) {
   const [labelReadonly, setLabelReadonly] = useState(true);
   const [label, setLabel] = useState<string>('');
   const [hours, setHours] = useState(0);
@@ -17,6 +21,14 @@ export const Timer = () => {
   const [repeat, setRepeat] = useState(false);
   const [isTimerReady, setIsTimerReady] = useState(false);
 
+  const debouncedLabel = useDebounce(label, 500);
+
+  useEffect(() => {
+    async () => {
+      // await updateTimer(id, { field: value} );
+    };
+  }, [debouncedLabel]);
+
   return (
     <div
       style={{
@@ -25,31 +37,34 @@ export const Timer = () => {
         marginBlock: '15px',
       }}
     >
-      <Label
-        label={label}
-        setLabel={setLabel}
-        labelReadonly={labelReadonly}
-        setLabelReadonly={setLabelReadonly}
-      />
-      <Hms
-        play={play}
-        hours={hours}
-        setHours={setHours}
-        minutes={minutes}
-        setMinutes={setMinutes}
-        seconds={seconds}
-        setSeconds={setSeconds}
-        setIsTimerReady={setIsTimerReady}
-      />
-      <Controller
-        isTimerReady={isTimerReady}
-        play={play}
-        setPlay={setPlay}
-        pause={pause}
-        setPause={setPause}
-        repeat={repeat}
-        setRepeat={setRepeat}
-      />
+      <div>
+        <Label
+          label={label}
+          setLabel={setLabel}
+          labelReadonly={labelReadonly}
+          setLabelReadonly={setLabelReadonly}
+        />
+        <Hms
+          play={play}
+          hours={hours}
+          setHours={setHours}
+          minutes={minutes}
+          setMinutes={setMinutes}
+          seconds={seconds}
+          setSeconds={setSeconds}
+          setIsTimerReady={setIsTimerReady}
+        />
+        <Controller
+          isTimerReady={isTimerReady}
+          play={play}
+          setPlay={setPlay}
+          pause={pause}
+          setPause={setPause}
+          repeat={repeat}
+          setRepeat={setRepeat}
+        />
+      </div>
+      <button onClick={onRemove}>remove</button>
     </div>
   );
-};
+}

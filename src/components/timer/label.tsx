@@ -5,12 +5,12 @@ interface Props {
   setLabelReadonly: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const Label = ({
+export function Label({
   label,
   labelReadonly,
   setLabel,
   setLabelReadonly,
-}: Props) => {
+}: Props) {
   return (
     <div style={{ paddingBlock: '5px' }}>
       <input
@@ -25,4 +25,4 @@ export const Label = ({
       />
     </div>
   );
-};
+}

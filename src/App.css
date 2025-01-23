@@ -17,6 +17,12 @@ body {
 input {
   font-size: 1.2rem;
   padding: 5px 10px;
+
+  outline: 1px solid black;
+}
+
+input:focus {
+  background-color: antiquewhite;
 }
 
 button {

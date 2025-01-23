@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Hms as HmsType } from '../../bindings/Hms';
+import { EmptyString, HmsKind } from '../../types';
 
 const MAX_VALUE = 1000;
 const ERROR_TIMEOUT = 2222;
-
-type EmptyString = '';
 
 interface Props {
   play: boolean;
@@ -50,14 +48,12 @@ export function Hms({
 
     if (seconds < 0) {
       if (minutes !== 0) {
-        console.log('shohei - minutes', minutes);
         setMinutes((prev) => prev - 1);
         setSeconds(59);
         return;
       }
 
       if (hours !== 0) {
-        console.log('shohei - hours', hours);
         setHours((prev) => prev - 1);
         setMinutes(59);
         setSeconds(59);
@@ -66,7 +62,7 @@ export function Hms({
     }
   }, [seconds]);
 
-  function handleInput(e: React.ChangeEvent<HTMLInputElement>, type: HmsType) {
+  function setDuration(e: React.ChangeEvent<HTMLInputElement>, type: HmsKind) {
     const isEmpty = e.target.value === '';
     const inp = isEmpty ? 0 : parseInt(e.target.value);
     if (isNaN(inp)) return;
@@ -100,7 +96,7 @@ export function Hms({
       <div
         style={{
           display: 'flex',
-          gap: '5px',
+          gap: '12px',
           paddingBlock: '5px',
           width: '100%',
         }}
@@ -108,7 +104,7 @@ export function Hms({
         <div
           style={{
             display: 'flex',
-            gap: '2.5px',
+            gap: '6px',
             justifyContent: 'center',
             alignItems: 'center',
             width: '30%',
@@ -118,7 +114,7 @@ export function Hms({
             type="text"
             readOnly={play}
             value={formatDuration(hours)}
-            onChange={(e) => handleInput(e, 'Hours')}
+            onChange={(e) => setDuration(e, 'Hours')}
             placeholder={`hr (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
@@ -127,7 +123,7 @@ export function Hms({
         <div
           style={{
             display: 'flex',
-            gap: '2.5px',
+            gap: '6px',
             justifyContent: 'center',
             alignItems: 'center',
             width: '30%',
@@ -137,7 +133,7 @@ export function Hms({
             type="text"
             readOnly={play}
             value={formatDuration(minutes)}
-            onChange={(e) => handleInput(e, 'Minutes')}
+            onChange={(e) => setDuration(e, 'Minutes')}
             placeholder={`min (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
@@ -146,7 +142,7 @@ export function Hms({
         <div
           style={{
             display: 'flex',
-            gap: '2.5px',
+            gap: '6px',
             justifyContent: 'center',
             alignItems: 'center',
             width: '30%',
@@ -156,7 +152,7 @@ export function Hms({
             type="text"
             readOnly={play}
             value={formatDuration(seconds)}
-            onChange={(e) => handleInput(e, 'Seconds')}
+            onChange={(e) => setDuration(e, 'Seconds')}
             placeholder={`sec (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
