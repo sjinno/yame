@@ -64,7 +64,9 @@ export function Timer({ id, onRemove }: Props) {
           setRepeat={setRepeat}
         />
       </div>
-      <button onClick={onRemove}>remove</button>
+      <div style={{ textAlign: 'center' }}>
+        <button onClick={onRemove}>remove</button>
+      </div>
     </div>
   );
 }
