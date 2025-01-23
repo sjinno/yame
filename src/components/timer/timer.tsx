@@ -18,7 +18,13 @@ export const Timer = () => {
   const [isTimerReady, setIsTimerReady] = useState(false);
 
   return (
-    <div style={{ border: '1px solid black', padding: '10px 15px' }}>
+    <div
+      style={{
+        border: '1px solid black',
+        padding: '10px 15px',
+        marginBlock: '15px',
+      }}
+    >
       <Label
         label={label}
         setLabel={setLabel}
@@ -26,6 +32,7 @@ export const Timer = () => {
         setLabelReadonly={setLabelReadonly}
       />
       <Hms
+        play={play}
         hours={hours}
         setHours={setHours}
         minutes={minutes}

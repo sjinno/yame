@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Pause } from './timer';
 
 interface Props {
