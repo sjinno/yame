@@ -83,7 +83,7 @@ export function Hms({
   }, [seconds]);
 
   useEffect(() => {
-    setOriginalHms(`${hours}:${minutes}:${seconds ?? 0}`);
+    if (typing) setOriginalHms(`${hours}:${minutes}:${seconds}`);
   }, [hours, minutes, seconds]);
 
   useEffect(() => {
