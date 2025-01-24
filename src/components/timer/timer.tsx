@@ -19,6 +19,7 @@ interface Props {
     hours: number,
     minutes: number,
     seconds: number,
+    orignalHms: string,
     repeat: boolean
   ) => void;
 }
@@ -35,6 +36,9 @@ export function Timer({
   const [hours, setHours] = useState(hms.hours);
   const [minutes, setMinutes] = useState(hms.minutes);
   const [seconds, setSeconds] = useState(hms.seconds);
+  const [originalHms, setOriginalHms] = useState(
+    `${hours}:${minutes}:${seconds}`
+  );
   const [play, setPlay] = useState(false);
   const [pause, setPause] = useState<Pause>(null);
   const [repeat, setRepeat] = useState(false);
@@ -43,7 +47,15 @@ export function Timer({
   const debouncedLabel = useDebounce(label, 500);
 
   useEffect(() => {
-    onUpdateTimer(id, debouncedLabel, hours, minutes, seconds, repeat);
+    onUpdateTimer(
+      id,
+      debouncedLabel,
+      hours,
+      minutes,
+      seconds,
+      originalHms,
+      repeat
+    );
   }, [debouncedLabel, hours, minutes, seconds, repeat]);
 
   return (
@@ -61,6 +73,11 @@ export function Timer({
           labelReadonly={labelReadonly}
           setLabelReadonly={setLabelReadonly}
         />
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <p>Timer: {originalHms}</p>
+          <p>|</p>
+          <p>Time exceeding: </p>
+        </div>
         <Hms
           play={play}
           hours={hours}
@@ -70,6 +87,7 @@ export function Timer({
           seconds={seconds}
           setSeconds={setSeconds}
           setIsTimerReady={setIsTimerReady}
+          setOriginalHms={setOriginalHms}
         />
         <Controller
           isTimerReady={isTimerReady}

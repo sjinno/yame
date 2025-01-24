@@ -21,6 +21,7 @@ function App() {
       id: uuidv4(),
       label: '',
       hms: { hours: 0, minutes: 0, seconds: 0 },
+      originalHms: '00:00:00',
       repeat: false,
     };
     const updatedTimers = [...timers, timer];
@@ -40,6 +41,7 @@ function App() {
     hours: number,
     minutes: number,
     seconds: number,
+    originalHms: string,
     repeat: boolean
   ) {
     const updatedTimers = timers.map((timer) => {
@@ -48,6 +50,7 @@ function App() {
           id,
           label,
           hms: { hours, minutes, seconds },
+          originalHms,
           repeat,
         } satisfies TimerType;
       }

@@ -12,6 +12,7 @@ interface Props {
   setHours: React.Dispatch<React.SetStateAction<number>>;
   setMinutes: React.Dispatch<React.SetStateAction<number>>;
   setSeconds: React.Dispatch<React.SetStateAction<number>>;
+  setOriginalHms: React.Dispatch<React.SetStateAction<string>>;
   setIsTimerReady: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -23,8 +24,10 @@ export function Hms({
   setHours,
   setMinutes,
   setSeconds,
+  setOriginalHms,
   setIsTimerReady,
 }: Props) {
+  const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<number | undefined>(undefined);
 
@@ -62,10 +65,19 @@ export function Hms({
     }
   }, [seconds]);
 
+  useEffect(() => {
+    if (typing) {
+      setOriginalHms(`${hours}:${minutes}:${seconds}`);
+    }
+    setTyping(false);
+  }, [typing]);
+
   async function setDuration(
     e: React.ChangeEvent<HTMLInputElement>,
     type: HmsKind
   ) {
+    setTyping(true);
+
     const isEmpty = e.target.value === '';
     const inp = isEmpty ? 0 : parseInt(e.target.value);
     if (isNaN(inp)) return;
@@ -82,11 +94,14 @@ export function Hms({
 
     switch (type) {
       case 'hours':
-        return setHours(inp);
+        setHours(inp);
+        break;
       case 'minutes':
-        return setMinutes(inp);
+        setMinutes(inp);
+        break;
       case 'seconds':
-        return setSeconds(inp);
+        setSeconds(inp);
+        break;
     }
   }
 

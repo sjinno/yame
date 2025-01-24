@@ -18,6 +18,7 @@ class TimersStore {
           label: '',
           hms: { hours: 0, minutes: 0, seconds: 0 },
           repeat: false,
+          originalHms: '00:00:00',
         } satisfies Timer,
       ]);
     }

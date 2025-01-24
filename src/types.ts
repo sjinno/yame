@@ -8,6 +8,7 @@ export type Timer = {
   id: string;
   label: string;
   hms: Hms;
+  originalHms: string;
   repeat: boolean;
 };
 
