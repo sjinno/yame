@@ -81,8 +81,10 @@ export function Timer({
           <p>Time exceeding: </p>
         </div>
         <Hms
+          repeat={repeat}
           timerStatus={timerStatus}
           hms={hms}
+          originalHms={originalHms}
           setHms={setHms}
           setTimerStatus={setTimerStatus}
           setIsTimerReady={setIsTimerReady}

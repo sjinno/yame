@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Hms as HmsType, TimerStatus } from '../../types';
-import { playAudio } from '../../common';
+import { createAudioPlayer } from '../../utils';
+import RoosterSound from '../../assets/audio/hahn_kikeriki.mp3';
 
 const MAX_VALUE = 1000;
 const ERROR_TIMEOUT = 2222;
 
 interface Props {
+  repeat: boolean;
   timerStatus: TimerStatus;
   hms: HmsType;
+  originalHms: string;
   setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
   setHms: React.Dispatch<React.SetStateAction<HmsType>>;
   setOriginalHms: React.Dispatch<React.SetStateAction<string>>;
@@ -15,8 +18,10 @@ interface Props {
 }
 
 export function Hms({
+  repeat,
   timerStatus,
   hms,
+  originalHms,
   setHms,
   setTimerStatus,
   setOriginalHms,
@@ -26,14 +31,25 @@ export function Hms({
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<number | undefined>(undefined);
 
+  const roosterPlayer = createAudioPlayer(RoosterSound);
+
   useEffect(() => {
     if (timerStatus === 'done') {
       clearInterval(timer);
-      const playSound = async () => {
-        await playAudio();
-        setTimerStatus('idle');
+
+      const onSoundEnd = () => {
+        if (repeat) {
+          const [hours, minutes, seconds] = originalHms.split(':').map(Number);
+          setHms({ hours, minutes, seconds });
+          setTimerStatus('playing');
+        } else {
+          setTimerStatus('idle');
+        }
       };
-      playSound();
+
+      // Play sound and wait for it to finish
+      roosterPlayer.play(onSoundEnd);
+
       return;
     }
 
