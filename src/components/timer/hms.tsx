@@ -62,11 +62,6 @@ export function Hms({
   }, [done]);
 
   useEffect(() => {
-    console.log('shohei - {hours,minutes,seconds}', {
-      hours,
-      minutes,
-      seconds,
-    });
     if (seconds !== null && seconds < 1 && minutes === 0 && hours === 0) {
       return setDone(true);
     }
