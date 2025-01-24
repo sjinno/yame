@@ -2,20 +2,39 @@ import { useEffect, useState } from 'react';
 import { Label } from './label';
 import { Hms } from './hms';
 import { Controller } from './controller';
-import { Pause } from '../../types';
+import { Hms as HmsType, Pause, Timer as TimerType } from '../../types';
 import { useDebounce } from '../../hooks';
+
+export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
 interface Props {
   id: string;
+  label: string;
+  hms: HmsType;
+  timers: TimerType[];
   onRemove: () => void;
+  onUpdateTimer: (
+    id: string,
+    label: string,
+    hours: number,
+    minutes: number,
+    seconds: number,
+    repeat: boolean
+  ) => void;
 }
 
-export function Timer({ id, onRemove }: Props) {
+export function Timer({
+  id,
+  label: label_,
+  hms,
+  onRemove,
+  onUpdateTimer,
+}: Props) {
   const [labelReadonly, setLabelReadonly] = useState(true);
-  const [label, setLabel] = useState<string>('');
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [label, setLabel] = useState<string>(label_);
+  const [hours, setHours] = useState(hms.hours);
+  const [minutes, setMinutes] = useState(hms.minutes);
+  const [seconds, setSeconds] = useState(hms.seconds);
   const [play, setPlay] = useState(false);
   const [pause, setPause] = useState<Pause>(null);
   const [repeat, setRepeat] = useState(false);
@@ -24,10 +43,8 @@ export function Timer({ id, onRemove }: Props) {
   const debouncedLabel = useDebounce(label, 500);
 
   useEffect(() => {
-    async () => {
-      // await updateTimer(id, { field: value} );
-    };
-  }, [debouncedLabel]);
+    onUpdateTimer(id, debouncedLabel, hours, minutes, seconds, repeat);
+  }, [debouncedLabel, hours, minutes, seconds, repeat]);
 
   return (
     <div

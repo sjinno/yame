@@ -62,7 +62,10 @@ export function Hms({
     }
   }, [seconds]);
 
-  function setDuration(e: React.ChangeEvent<HTMLInputElement>, type: HmsKind) {
+  async function setDuration(
+    e: React.ChangeEvent<HTMLInputElement>,
+    type: HmsKind
+  ) {
     const isEmpty = e.target.value === '';
     const inp = isEmpty ? 0 : parseInt(e.target.value);
     if (isNaN(inp)) return;
@@ -78,11 +81,11 @@ export function Hms({
     setIsTimerReady(inp !== 0);
 
     switch (type) {
-      case 'Hours':
+      case 'hours':
         return setHours(inp);
-      case 'Minutes':
+      case 'minutes':
         return setMinutes(inp);
-      case 'Seconds':
+      case 'seconds':
         return setSeconds(inp);
     }
   }
@@ -114,7 +117,7 @@ export function Hms({
             type="text"
             readOnly={play}
             value={formatDuration(hours)}
-            onChange={(e) => setDuration(e, 'Hours')}
+            onChange={(e) => setDuration(e, 'hours')}
             placeholder={`hr (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
@@ -133,7 +136,7 @@ export function Hms({
             type="text"
             readOnly={play}
             value={formatDuration(minutes)}
-            onChange={(e) => setDuration(e, 'Minutes')}
+            onChange={(e) => setDuration(e, 'minutes')}
             placeholder={`min (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
@@ -152,7 +155,7 @@ export function Hms({
             type="text"
             readOnly={play}
             value={formatDuration(seconds)}
-            onChange={(e) => setDuration(e, 'Seconds')}
+            onChange={(e) => setDuration(e, 'seconds')}
             placeholder={`sec (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />

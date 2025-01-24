@@ -21,6 +21,7 @@ function App() {
       id: uuidv4(),
       label: '',
       hms: { hours: 0, minutes: 0, seconds: 0 },
+      repeat: false,
     };
     const updatedTimers = [...timers, timer];
     setTimers(updatedTimers);
@@ -33,14 +34,39 @@ function App() {
     await timersStore.store?.set('timers', updatedTimers);
   }
 
+  async function updateTimer(
+    id: string,
+    label: string,
+    hours: number,
+    minutes: number,
+    seconds: number,
+    repeat: boolean
+  ) {
+    const updatedTimers = timers.map((timer) => {
+      if (timer.id === id) {
+        return {
+          id,
+          label,
+          hms: { hours, minutes, seconds },
+          repeat,
+        } satisfies TimerType;
+      }
+      return timer;
+    });
+    setTimers(updatedTimers); // Update local state
+    await timersStore.store?.set('timers', updatedTimers); // Persist to storage
+  }
+
   return (
     <main>
       {timers.length > 0 &&
         timers.map((timer) => (
           <Timer
             key={timer.id}
-            id={timer.id}
+            {...timer}
+            timers={timers}
             onRemove={() => removeTimer(timer.id)}
+            onUpdateTimer={updateTimer}
           />
         ))}
       <div style={{ textAlign: 'center' }}>
