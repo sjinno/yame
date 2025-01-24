@@ -1,7 +1,7 @@
 export type Hms = {
-  hours: number;
-  minutes: number;
-  seconds: number;
+  hours: number | null;
+  minutes: number | null;
+  seconds: number | null;
 };
 
 export type Timer = {

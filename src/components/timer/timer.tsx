@@ -16,9 +16,9 @@ interface Props {
   onUpdateTimer: (
     id: string,
     label: string,
-    hours: number,
-    minutes: number,
-    seconds: number,
+    hours: number | null,
+    minutes: number | null,
+    seconds: number | null,
     orignalHms: string,
     repeat: boolean
   ) => void;
@@ -33,9 +33,9 @@ export function Timer({
 }: Props) {
   const [labelReadonly, setLabelReadonly] = useState(true);
   const [label, setLabel] = useState<string>(label_);
-  const [hours, setHours] = useState(hms.hours);
-  const [minutes, setMinutes] = useState(hms.minutes);
-  const [seconds, setSeconds] = useState(hms.seconds);
+  const [hours, setHours] = useState<number | null>(hms.hours);
+  const [minutes, setMinutes] = useState<number | null>(hms.minutes);
+  const [seconds, setSeconds] = useState<number | null>(hms.seconds);
   const [originalHms, setOriginalHms] = useState(
     `${hours}:${minutes}:${seconds}`
   );

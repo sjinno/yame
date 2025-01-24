@@ -38,9 +38,9 @@ function App() {
   async function updateTimer(
     id: string,
     label: string,
-    hours: number,
-    minutes: number,
-    seconds: number,
+    hours: number | null,
+    minutes: number | null,
+    seconds: number | null,
     originalHms: string,
     repeat: boolean
   ) {
