@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Label } from './label';
 import { Hms } from './hms';
 import { Controller } from './controller';
-import { Hms as HmsType, Pause, Timer as TimerType } from '../../types';
+import { Hms as HmsType, TimerStatus } from '../../types';
 import { useDebounce } from '../../hooks';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
@@ -11,14 +11,13 @@ interface Props {
   id: string;
   label: string;
   hms: HmsType;
-  timers: TimerType[];
+  originalHms: string;
+  repeat: boolean;
   onRemove: () => void;
   onUpdateTimer: (
     id: string,
     label: string,
-    hours: number | null,
-    minutes: number | null,
-    seconds: number | null,
+    hms: HmsType,
     orignalHms: string,
     repeat: boolean
   ) => void;
@@ -27,36 +26,39 @@ interface Props {
 export function Timer({
   id,
   label: label_,
-  hms,
+  hms: hms_,
+  originalHms: originalHms_,
+  repeat: repeat_,
   onRemove,
   onUpdateTimer,
 }: Props) {
   const [labelReadonly, setLabelReadonly] = useState(true);
   const [label, setLabel] = useState<string>(label_);
-  const [hours, setHours] = useState<number | null>(hms.hours);
-  const [minutes, setMinutes] = useState<number | null>(hms.minutes);
-  const [seconds, setSeconds] = useState<number | null>(hms.seconds);
-  const [originalHms, setOriginalHms] = useState(
-    `${hours}:${minutes}:${seconds}`
-  );
-  const [play, setPlay] = useState(false);
-  const [pause, setPause] = useState<Pause>(null);
-  const [repeat, setRepeat] = useState(false);
+  const [hms, setHms] = useState<HmsType>(hms_);
+  const [originalHms, setOriginalHms] = useState(originalHms_);
+  const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
+  const [repeat, setRepeat] = useState(repeat_);
   const [isTimerReady, setIsTimerReady] = useState(false);
+  const [isResettable, setIsResettable] = useState(false);
 
   const debouncedLabel = useDebounce(label, 500);
 
   useEffect(() => {
-    onUpdateTimer(
-      id,
-      debouncedLabel,
-      hours,
-      minutes,
-      seconds,
-      originalHms,
-      repeat
-    );
-  }, [debouncedLabel, hours, minutes, seconds, originalHms, repeat]);
+    onUpdateTimer(id, debouncedLabel, hms, originalHms, repeat);
+    const { hours, minutes, seconds } = hms;
+    setIsTimerReady([hours, minutes, seconds].some((v) => !!v));
+    setIsResettable(originalHms !== `${hours}:${minutes}:${seconds}`);
+  }, [debouncedLabel, hms, originalHms, repeat]);
+
+  useEffect(() => {
+    if (timerStatus === 'stopped') {
+      const [hours, minutes, seconds] = originalHms
+        .split(':')
+        .map((v) => parseInt(v));
+      setHms({ hours, minutes, seconds });
+      setTimerStatus('idle');
+    }
+  }, [timerStatus]);
 
   return (
     <div
@@ -79,24 +81,20 @@ export function Timer({
           <p>Time exceeding: </p>
         </div>
         <Hms
-          play={play}
-          hours={hours}
-          setHours={setHours}
-          minutes={minutes}
-          setMinutes={setMinutes}
-          seconds={seconds}
-          setSeconds={setSeconds}
+          timerStatus={timerStatus}
+          hms={hms}
+          setHms={setHms}
+          setTimerStatus={setTimerStatus}
           setIsTimerReady={setIsTimerReady}
           setOriginalHms={setOriginalHms}
         />
         <Controller
           isTimerReady={isTimerReady}
-          play={play}
-          setPlay={setPlay}
-          pause={pause}
-          setPause={setPause}
+          isResettable={isResettable}
           repeat={repeat}
+          timerStatus={timerStatus}
           setRepeat={setRepeat}
+          setTimerStatus={setTimerStatus}
         />
       </div>
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>

@@ -1,121 +1,119 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
-import { HmsKind } from '../../types';
+import { useEffect, useState } from 'react';
+import { Hms as HmsType, TimerStatus } from '../../types';
 import { playAudio } from '../../common';
-
-type FocusType = 'focus' | 'blur';
 
 const MAX_VALUE = 1000;
 const ERROR_TIMEOUT = 2222;
 
 interface Props {
-  play: boolean;
-  hours: number | null;
-  minutes: number | null;
-  seconds: number | null;
-  setHours: React.Dispatch<React.SetStateAction<number | null>>;
-  setMinutes: React.Dispatch<React.SetStateAction<number | null>>;
-  setSeconds: React.Dispatch<React.SetStateAction<number | null>>;
+  timerStatus: TimerStatus;
+  hms: HmsType;
+  setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
+  setHms: React.Dispatch<React.SetStateAction<HmsType>>;
   setOriginalHms: React.Dispatch<React.SetStateAction<string>>;
   setIsTimerReady: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export function Hms({
-  play,
-  hours,
-  minutes,
-  seconds,
-  setHours,
-  setMinutes,
-  setSeconds,
+  timerStatus,
+  hms,
+  setHms,
+  setTimerStatus,
   setOriginalHms,
   setIsTimerReady,
 }: Props) {
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<number | undefined>(undefined);
-  const [done, setDone] = useState(false);
-  const hoursRef = useRef<HTMLInputElement | null>(null);
-  const minutesRef = useRef<HTMLInputElement | null>(null);
-  const secondsRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
-    if (!play) return;
+    if (timerStatus === 'done') {
+      clearInterval(timer);
+      const playSound = async () => {
+        await playAudio();
+        setTimerStatus('idle');
+      };
+      playSound();
+      return;
+    }
+
+    if (timerStatus !== 'playing') return;
 
     const interval = setInterval(() => {
-      setSeconds((prev) => (prev !== null ? prev - 1 : 0));
+      setHms((prev) => ({
+        ...prev,
+        seconds: prev.seconds !== null ? prev.seconds - 1 : 0,
+      }));
     }, 1000);
 
     setTimer(interval);
 
     return () => clearInterval(interval);
-  }, [play]);
+  }, [timerStatus]);
 
   useEffect(() => {
-    if (done) {
-      clearInterval(timer);
-      const playSound = async () => {
-        // await playAudio();
-        setDone(false);
-      };
-      playSound();
-    }
-  }, [done]);
+    const { hours, seconds, minutes } = hms;
+    if (typing) setOriginalHms(`${hours ?? 0}:${minutes ?? 0}:${seconds ?? 0}`);
 
-  useEffect(() => {
-    if (seconds !== null && seconds < 1 && minutes === 0 && hours === 0) {
-      return setDone(true);
+    // Time's up!
+    if (
+      timerStatus === 'playing' &&
+      seconds !== null &&
+      seconds < 1 &&
+      minutes === 0 &&
+      hours === 0
+    ) {
+      return setTimerStatus('done');
     }
 
     if (seconds !== null && seconds < 0) {
+      // If `seconds` is below `0` and `minutes` is not `0`,
+      // then refill `seconds` and decrement `minutes` by `1`.
       if (minutes !== 0) {
-        setMinutes((prev) => (prev !== null ? prev - 1 : 0));
-        setSeconds(59);
+        setHms(({ hours, minutes }) => ({
+          hours,
+          minutes: minutes !== null ? minutes - 1 : 0,
+          seconds: 59,
+        }));
         return;
       }
 
+      // If `seconds` and `minutes` are both `0`, but `hours` is not,
+      // then refill `minutes` and `seconds` and decrement `hours` by `1`.
       if (hours !== 0) {
-        setHours((prev) => (prev !== null ? prev - 1 : 0));
-        setMinutes(59);
-        setSeconds(59);
+        setHms(({ hours }) => ({
+          hours: hours !== null ? hours - 1 : 0,
+          minutes: 59,
+          seconds: 59,
+        }));
         return;
       }
     }
-  }, [seconds]);
+  }, [hms]);
 
   useEffect(() => {
-    if (typing) setOriginalHms(`${hours}:${minutes}:${seconds}`);
-  }, [hours, minutes, seconds]);
+    if (typing || timerStatus === 'playing') return;
 
-  useEffect(() => {
-    const refs = [
-      { value: hours, ref: hoursRef },
-      { value: minutes, ref: minutesRef },
-      { value: seconds, ref: secondsRef },
-    ];
+    const updateNullToZero = (hms: HmsType): HmsType => ({
+      hours: hms.hours ?? 0,
+      minutes: hms.minutes ?? 0,
+      seconds: hms.seconds ?? 0,
+    });
 
-    if (typing) {
-      refs.forEach(({ value, ref }) => {
-        const isFocused = ref.current === document.activeElement;
-        if (value === 0 && ref.current && isFocused) {
-          ref.current.value = '';
-        }
-      });
-    } else {
-      if (hours === null) setHours(0);
-      if (minutes === null) setMinutes(0);
-      if (seconds === null) setSeconds(0);
+    if (Object.values(hms).some((v) => v === null)) {
+      setHms((prev) => updateNullToZero(prev));
     }
   }, [typing]);
 
   async function setDuration(
     e: React.ChangeEvent<HTMLInputElement>,
-    type: HmsKind
+    type: keyof HmsType
   ) {
     const isEmpty = e.target.value === '';
     const inp = isEmpty ? null : parseInt(e.target.value);
-    if (inp && isNaN(inp)) return;
+    if (inp !== null && isNaN(inp)) return;
 
-    if (inp && inp > MAX_VALUE) {
+    if (inp !== null && inp > MAX_VALUE) {
       if (!error) {
         setError(`Value must not go over ${MAX_VALUE}.`);
         setTimeout(() => setError(null), ERROR_TIMEOUT);
@@ -127,25 +125,12 @@ export function Hms({
 
     switch (type) {
       case 'hours':
-        setHours(inp);
-        break;
+        return setHms((prev) => ({ ...prev, hours: inp }));
       case 'minutes':
-        setMinutes(inp);
-        break;
+        return setHms((prev) => ({ ...prev, minutes: inp }));
       case 'seconds':
-        setSeconds(inp);
-        break;
+        return setHms((prev) => ({ ...prev, seconds: inp }));
     }
-  }
-
-  function formatDuration(
-    ref: MutableRefObject<HTMLInputElement | null>,
-    focusType: FocusType
-  ) {
-    const elt = ref.current;
-    if (!elt) return;
-    if (focusType === 'focus' && elt.value === '0') return (elt.value = '');
-    if (focusType === 'blur' && elt.value === '') return (elt.value = '0');
   }
 
   return (
@@ -168,11 +153,14 @@ export function Hms({
           }}
         >
           <input
-            ref={hoursRef}
             type="text"
-            readOnly={play}
-            value={hours ?? ''}
-            onFocus={() => setTyping(true)}
+            readOnly={timerStatus === 'playing'}
+            value={hms.hours ?? ''}
+            placeholder={'0-1000'}
+            onFocus={() => {
+              setTyping(true);
+              setHms((prev) => ({ ...prev, hours: prev.hours || null }));
+            }}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'hours')}
             style={{ width: '100%', textAlign: 'right' }}
@@ -189,11 +177,14 @@ export function Hms({
           }}
         >
           <input
-            ref={minutesRef}
             type="text"
-            readOnly={play}
-            value={minutes ?? ''}
-            onFocus={() => setTyping(true)}
+            readOnly={timerStatus === 'playing'}
+            value={hms.minutes ?? ''}
+            placeholder={'0-1000'}
+            onFocus={() => {
+              setTyping(true);
+              setHms((prev) => ({ ...prev, minutes: prev.minutes || null }));
+            }}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'minutes')}
             style={{ width: '100%', textAlign: 'right' }}
@@ -210,11 +201,14 @@ export function Hms({
           }}
         >
           <input
-            ref={secondsRef}
             type="text"
-            readOnly={play}
-            value={seconds ?? ''}
-            onFocus={() => setTyping(true)}
+            readOnly={timerStatus === 'playing'}
+            value={hms.seconds ?? ''}
+            placeholder={'0-1000'}
+            onFocus={() => {
+              setTyping(true);
+              setHms((prev) => ({ ...prev, seconds: prev.seconds || null }));
+            }}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'seconds')}
             style={{ width: '100%', textAlign: 'right' }}

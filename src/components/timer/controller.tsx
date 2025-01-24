@@ -1,36 +1,22 @@
-import { Pause } from '../../types';
+import { TimerStatus } from '../../types';
 
 interface Props {
   isTimerReady: boolean;
-  play: boolean;
-  pause: Pause;
+  isResettable: boolean;
   repeat: boolean;
-  setPlay: React.Dispatch<React.SetStateAction<boolean>>;
-  setPause: React.Dispatch<React.SetStateAction<Pause>>;
+  timerStatus: TimerStatus;
   setRepeat: React.Dispatch<React.SetStateAction<boolean>>;
+  setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
 }
 
 export function Controller({
   isTimerReady,
-  play,
-  pause,
+  isResettable,
   repeat,
-  setPlay,
-  setPause,
+  timerStatus,
   setRepeat,
+  setTimerStatus,
 }: Props) {
-  const playTimer = () => {
-    if (!isTimerReady) return;
-
-    setPlay(true);
-    setPause('unpaused');
-  };
-
-  const pauseTimer = () => {
-    setPlay(false);
-    setPause('paused');
-  };
-
   return (
     <div
       style={{
@@ -40,21 +26,21 @@ export function Controller({
         paddingBlock: '5px',
       }}
     >
-      <button disabled={!isTimerReady || play} onClick={playTimer}>
+      <button
+        disabled={!isTimerReady || timerStatus === 'playing'}
+        onClick={() => setTimerStatus('playing')}
+      >
         start
       </button>
       <button
-        disabled={pause === 'paused' || pause === null}
-        onClick={pauseTimer}
+        disabled={['idle', 'paused', 'stopped'].includes(timerStatus)}
+        onClick={() => setTimerStatus('paused')}
       >
         pause
       </button>
       <button
-        disabled={!play && pause !== 'paused'}
-        onClick={() => {
-          setPlay(false);
-          setPause(null);
-        }}
+        disabled={!(isResettable || timerStatus === 'playing')}
+        onClick={() => setTimerStatus('stopped')}
       >
         stop & reset
       </button>
