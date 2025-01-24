@@ -8,7 +8,7 @@ class TimersStore {
   constructor() {}
 
   async init(): Promise<TimersStore> {
-    this.store = await Store.load('store.json', { autoSave: true });
+    this.store = await Store.load('store.json');
     const timers = await this.store.get('timers');
 
     if (!timers) {
@@ -17,8 +17,8 @@ class TimersStore {
           id: uuid4(),
           label: '',
           hms: { hours: 0, minutes: 0, seconds: 0 },
+          originalHms: '0:0:0',
           repeat: false,
-          originalHms: '00:00:00',
         } satisfies Timer,
       ]);
     }
@@ -27,6 +27,7 @@ class TimersStore {
   }
 
   async getTimers(): Promise<Timer[]> {
+    if (!this.store) await this.init();
     return (await this.store!.get('timers'))!;
   }
 }
