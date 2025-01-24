@@ -4,6 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  font-family: 'Iosevka Proggy', sans-serif;
 }
 
 html {
@@ -15,7 +16,7 @@ body {
 }
 
 input {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   padding: 5px 10px;
 
   outline: 1px solid black;
@@ -26,11 +27,11 @@ input:focus {
 }
 
 button {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   padding: 5px 10px;
 }
 
 main {
-  width: 400px;
+  width: 500px;
   margin-inline: auto;
 }

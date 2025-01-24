@@ -81,7 +81,7 @@ export function Timer({
           setRepeat={setRepeat}
         />
       </div>
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', paddingTop: '5px' }}>
         <button onClick={onRemove}>remove</button>
       </div>
     </div>
