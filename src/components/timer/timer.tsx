@@ -56,7 +56,7 @@ export function Timer({
       originalHms,
       repeat
     );
-  }, [debouncedLabel, hours, minutes, seconds, repeat]);
+  }, [debouncedLabel, hours, minutes, seconds, originalHms, repeat]);
 
   return (
     <div

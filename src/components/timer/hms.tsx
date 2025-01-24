@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react';
-import { EmptyString, HmsKind } from '../../types';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import { HmsKind } from '../../types';
+
+type FocusType = 'focus' | 'blur';
 
 const MAX_VALUE = 1000;
 const ERROR_TIMEOUT = 2222;
@@ -30,6 +32,9 @@ export function Hms({
   const [typing, setTyping] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<number | undefined>(undefined);
+  const hoursRef = useRef<HTMLInputElement | null>(null);
+  const minutesRef = useRef<HTMLInputElement | null>(null);
+  const secondsRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     if (!play) return;
@@ -66,9 +71,7 @@ export function Hms({
   }, [seconds]);
 
   useEffect(() => {
-    if (typing) {
-      setOriginalHms(`${hours}:${minutes}:${seconds}`);
-    }
+    if (typing) setOriginalHms(`${hours}:${minutes}:${seconds}`);
     setTyping(false);
   }, [typing]);
 
@@ -105,8 +108,14 @@ export function Hms({
     }
   }
 
-  function formatDuration(d: number): EmptyString | number {
-    return d === 0 && !play ? '' : d;
+  function formatDuration(
+    ref: MutableRefObject<HTMLInputElement | null>,
+    focusType: FocusType
+  ) {
+    const elt = ref.current;
+    if (!elt) return;
+    if (focusType === 'focus' && elt.value === '0') return (elt.value = '');
+    if (focusType === 'blur' && elt.value === '') return (elt.value = '0');
   }
 
   return (
@@ -129,11 +138,13 @@ export function Hms({
           }}
         >
           <input
+            ref={hoursRef}
             type="text"
             readOnly={play}
-            value={formatDuration(hours)}
+            value={hours}
+            onFocus={() => formatDuration(hoursRef, 'focus')}
+            onBlur={() => formatDuration(hoursRef, 'blur')}
             onChange={(e) => setDuration(e, 'hours')}
-            placeholder={`hr (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
           <span>h</span>
@@ -148,11 +159,13 @@ export function Hms({
           }}
         >
           <input
+            ref={minutesRef}
             type="text"
             readOnly={play}
-            value={formatDuration(minutes)}
+            value={minutes}
+            onFocus={() => formatDuration(minutesRef, 'focus')}
+            onBlur={() => formatDuration(minutesRef, 'blur')}
             onChange={(e) => setDuration(e, 'minutes')}
-            placeholder={`min (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
           <span>m</span>
@@ -167,11 +180,13 @@ export function Hms({
           }}
         >
           <input
+            ref={secondsRef}
             type="text"
             readOnly={play}
-            value={formatDuration(seconds)}
+            value={seconds}
+            onFocus={() => formatDuration(secondsRef, 'focus')}
+            onBlur={() => formatDuration(secondsRef, 'blur')}
             onChange={(e) => setDuration(e, 'seconds')}
-            placeholder={`sec (1-${MAX_VALUE})`}
             style={{ width: '100%', textAlign: 'right' }}
           />
           <span>s</span>
