@@ -145,7 +145,7 @@ export function Hms({
   }, [typing]);
 
   useEffect(() => {
-    if (!typing) {
+    if (!typing && timerStatus !== 'idle') {
       setHms(originalHms);
       return;
     }
@@ -156,11 +156,10 @@ export function Hms({
       }
       return;
     }
-  }, [originalHms]);
 
-  useEffect(() => {
     if (typing) {
       setHms(originalHms);
+      return;
     }
   }, [originalHms]);
 
