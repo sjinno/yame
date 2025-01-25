@@ -12,7 +12,7 @@ export type Hms = {
 export type Timer = {
   id: string;
   label: string;
+  repeat: boolean;
   hms: Hms;
   originalHms: Hms;
-  repeat: boolean;
 };

@@ -12,11 +12,9 @@ function App() {
 
   useEffect(() => {
     const loadTimers = async () => {
-      const store = await timersStore.init();
-      const timers = await store.getTimers();
+      const timers = await timersStore.get();
       setTimers(timers);
     };
-
     loadTimers();
   }, []);
 
@@ -29,22 +27,22 @@ function App() {
       repeat: false,
     };
     const updatedTimers = [...timers, timer];
-    await timersStore.store?.set('timers', updatedTimers);
+    await timersStore.update(updatedTimers);
     setTimers(updatedTimers);
   }
 
   async function removeTimer(id: string) {
     const updatedTimers = timers.filter((timer) => timer.id !== id);
-    await timersStore.store?.set('timers', updatedTimers);
+    await timersStore.update(updatedTimers);
     setTimers(updatedTimers);
   }
 
   async function updateTimer(
     id: string,
     label: string,
+    repeat: boolean,
     hms: Hms,
-    originalHms: Hms,
-    repeat: boolean
+    originalHms: Hms
   ) {
     const updatedTimers = timers.map((timer) => {
       if (timer.id === id) {
@@ -58,7 +56,7 @@ function App() {
       }
       return timer;
     });
-    await timersStore.store?.set('timers', updatedTimers); // Persist to storage
+    await timersStore.update(updatedTimers); // Persist to storage
     setTimers(updatedTimers); // Update local state
   }
 

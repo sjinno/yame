@@ -10,45 +10,46 @@ export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 interface Props {
   id: string;
   label: string;
+  repeat: boolean;
   hms: HmsType;
   originalHms: HmsType;
-  repeat: boolean;
   onRemove: () => void;
   onUpdateTimer: (
     id: string,
     label: string,
+    repeat: boolean,
     hms: HmsType,
-    orignalHms: HmsType,
-    repeat: boolean
+    orignalHms: HmsType
   ) => void;
 }
 
 export function Timer({
   id,
   label: label_,
+  repeat: repeat_,
   hms: hms_,
   originalHms: originalHms_,
-  repeat: repeat_,
   onRemove,
   onUpdateTimer,
 }: Props) {
-  const [labelReadonly, setLabelReadonly] = useState(true);
   const [label, setLabel] = useState<string>(label_);
+  const [repeat, setRepeat] = useState(repeat_);
   const [hms, setHms] = useState(hms_);
   const [originalHms, setOriginalHms] = useState(originalHms_);
-  const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
-  const [repeat, setRepeat] = useState(repeat_);
+
+  const [labelReadonly, setLabelReadonly] = useState(true);
   const [isTimerReady, setIsTimerReady] = useState(false);
-  const [isResettable, setIsResettable] = useState(false);
+  const [isTimerResettable, setIsTimerResettable] = useState(false);
+  const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
 
   const debouncedLabel = useDebounce(label, 500);
 
   useEffect(() => {
-    onUpdateTimer(id, debouncedLabel, hms, originalHms, repeat);
+    onUpdateTimer(id, debouncedLabel, repeat, hms, originalHms);
     const { hours: h1, minutes: m1, seconds: s1 } = hms;
     const { hours: h2, minutes: m2, seconds: s2 } = originalHms;
     setIsTimerReady([h2, m2, s2].some((v) => !!v));
-    setIsResettable(!(h1 === h2 && m1 === m2 && s1 === s2));
+    setIsTimerResettable(!(h1 === h2 && m1 === m2 && s1 === s2));
   }, [debouncedLabel, hms, originalHms, repeat]);
 
   useEffect(() => {
@@ -96,7 +97,7 @@ export function Timer({
         />
         <Controller
           isTimerReady={isTimerReady}
-          isResettable={isResettable}
+          isResettable={isTimerResettable}
           repeat={repeat}
           timerStatus={timerStatus}
           setRepeat={setRepeat}
