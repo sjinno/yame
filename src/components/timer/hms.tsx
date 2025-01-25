@@ -36,11 +36,11 @@ export function Hms({
   useEffect(() => {
     if (timerStatus === 'done') {
       clearInterval(timer);
+      const [hours, minutes, seconds] = originalHms.split(':').map(Number);
+      setHms({ hours, minutes, seconds });
 
       const onSoundEnd = () => {
         if (repeat) {
-          const [hours, minutes, seconds] = originalHms.split(':').map(Number);
-          setHms({ hours, minutes, seconds });
           setTimerStatus('playing');
         } else {
           setTimerStatus('idle');
@@ -173,10 +173,7 @@ export function Hms({
             readOnly={timerStatus === 'playing'}
             value={hms.hours ?? ''}
             placeholder={'0-1000'}
-            onFocus={() => {
-              setTyping(true);
-              setHms((prev) => ({ ...prev, hours: prev.hours || null }));
-            }}
+            onFocus={() => timerStatus !== 'playing' && setTyping(true)}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'hours')}
             style={{ width: '100%', textAlign: 'right' }}
@@ -197,10 +194,7 @@ export function Hms({
             readOnly={timerStatus === 'playing'}
             value={hms.minutes ?? ''}
             placeholder={'0-1000'}
-            onFocus={() => {
-              setTyping(true);
-              setHms((prev) => ({ ...prev, minutes: prev.minutes || null }));
-            }}
+            onFocus={() => timerStatus !== 'playing' && setTyping(true)}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'minutes')}
             style={{ width: '100%', textAlign: 'right' }}
@@ -221,10 +215,7 @@ export function Hms({
             readOnly={timerStatus === 'playing'}
             value={hms.seconds ?? ''}
             placeholder={'0-1000'}
-            onFocus={() => {
-              setTyping(true);
-              setHms((prev) => ({ ...prev, seconds: prev.seconds || null }));
-            }}
+            onFocus={() => timerStatus !== 'playing' && setTyping(true)}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'seconds')}
             style={{ width: '100%', textAlign: 'right' }}
