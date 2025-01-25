@@ -25,7 +25,7 @@ function App() {
       id: uuidv4(),
       label: '',
       hms: { hours: 0, minutes: 0, seconds: 0 },
-      originalHms: '0:0:0',
+      originalHms: { hours: 0, minutes: 0, seconds: 0 },
       repeat: false,
     };
     const updatedTimers = [...timers, timer];
@@ -43,7 +43,7 @@ function App() {
     id: string,
     label: string,
     hms: Hms,
-    originalHms: string,
+    originalHms: Hms,
     repeat: boolean
   ) {
     const updatedTimers = timers.map((timer) => {

@@ -13,6 +13,6 @@ export type Timer = {
   id: string;
   label: string;
   hms: Hms;
-  originalHms: string;
+  originalHms: Hms;
   repeat: boolean;
 };

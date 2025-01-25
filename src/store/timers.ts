@@ -17,7 +17,7 @@ class TimersStore {
           id: uuid4(),
           label: '',
           hms: { hours: 0, minutes: 0, seconds: 0 },
-          originalHms: '0:0:0',
+          originalHms: { hours: 0, minutes: 0, seconds: 0 },
           repeat: false,
         } satisfies Timer,
       ]);
