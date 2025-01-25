@@ -7,6 +7,7 @@ interface Props {
   timerStatus: TimerStatus;
   setRepeat: React.Dispatch<React.SetStateAction<boolean>>;
   setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
+  onClear: () => void;
 }
 
 export function Controller({
@@ -16,6 +17,7 @@ export function Controller({
   timerStatus,
   setRepeat,
   setTimerStatus,
+  onClear,
 }: Props) {
   return (
     <div
@@ -44,6 +46,7 @@ export function Controller({
       >
         stop & reset
       </button>
+      <button onClick={onClear}>clear</button>
       <div
         style={{
           display: 'flex',

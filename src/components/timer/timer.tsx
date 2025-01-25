@@ -97,6 +97,10 @@ export function Timer({
           timerStatus={timerStatus}
           setRepeat={setRepeat}
           setTimerStatus={setTimerStatus}
+          onClear={() => {
+            setHms({ hours: 0, minutes: 0, seconds: 0 });
+            setOriginalHms('0:0:0');
+          }}
         />
       </div>
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>
