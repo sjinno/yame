@@ -62,6 +62,9 @@ export function Timer({
     }
   }, [timerStatus]);
 
+  const updateLabel = (label: string) => setLabel(label);
+  const updateLabelReadonly = (readonly: boolean) => setLabelReadonly(readonly);
+
   return (
     <div
       style={{
@@ -73,9 +76,9 @@ export function Timer({
       <div>
         <Label
           label={label}
-          setLabel={setLabel}
           labelReadonly={labelReadonly}
-          setLabelReadonly={setLabelReadonly}
+          onLabelUpdate={updateLabel}
+          onReadonlyUpdate={updateLabelReadonly}
         />
         <div
           style={{
@@ -91,8 +94,6 @@ export function Timer({
             {formatDuration(hms.hours ?? 0)}:{formatDuration(hms.minutes ?? 0)}:
             {formatDuration(hms.seconds ?? 0)}
           </b>
-          {/* <p>|</p>
-          <p>Time exceeding: </p> */}
         </div>
         <Hms
           repeat={repeat}

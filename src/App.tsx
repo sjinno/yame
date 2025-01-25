@@ -18,7 +18,7 @@ function App() {
     loadTimers();
   }, []);
 
-  async function addTimer() {
+  const addTimer = async () => {
     const timer = {
       id: uuidv4(),
       label: '',
@@ -29,21 +29,21 @@ function App() {
     const updatedTimers = [...timers, timer];
     await timersStore.update(updatedTimers);
     setTimers(updatedTimers);
-  }
+  };
 
-  async function removeTimer(id: string) {
+  const removeTimer = async (id: string) => {
     const updatedTimers = timers.filter((timer) => timer.id !== id);
     await timersStore.update(updatedTimers);
     setTimers(updatedTimers);
-  }
+  };
 
-  async function updateTimer(
+  const updateTimer = async (
     id: string,
     label: string,
     repeat: boolean,
     hms: Hms,
     originalHms: Hms
-  ) {
+  ) => {
     const updatedTimers = timers.map((timer) => {
       if (timer.id === id) {
         return {
@@ -58,7 +58,7 @@ function App() {
     });
     await timersStore.update(updatedTimers); // Persist to storage
     setTimers(updatedTimers); // Update local state
-  }
+  };
 
   return (
     <main>

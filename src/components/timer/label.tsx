@@ -1,15 +1,15 @@
 interface Props {
   label: string;
   labelReadonly: boolean;
-  setLabel: React.Dispatch<React.SetStateAction<string>>;
-  setLabelReadonly: React.Dispatch<React.SetStateAction<boolean>>;
+  onLabelUpdate: (label: string) => void;
+  onReadonlyUpdate: (readonly: boolean) => void;
 }
 
 export function Label({
   label,
   labelReadonly,
-  setLabel,
-  setLabelReadonly,
+  onLabelUpdate,
+  onReadonlyUpdate,
 }: Props) {
   return (
     <div style={{ paddingBlock: '5px' }}>
@@ -18,9 +18,9 @@ export function Label({
         value={label}
         placeholder="label"
         readOnly={labelReadonly}
-        onClick={() => setLabelReadonly(false)}
-        onBlur={() => setLabelReadonly(true)}
-        onChange={(e) => setLabel(e.target.value)}
+        onClick={() => onReadonlyUpdate(false)}
+        onBlur={() => onReadonlyUpdate(true)}
+        onChange={(e) => onLabelUpdate(e.target.value)}
         autoCorrect="off"
       />
     </div>
