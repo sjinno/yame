@@ -4,7 +4,7 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Iosevka Proggy', sans-serif;
+  font-family: 'Geist', 'Iosevka Proggy', sans-serif;
 }
 
 html {
@@ -12,11 +12,11 @@ html {
 }
 
 body {
-  font-size: 1.6rem;
+  font-size: 2rem;
 }
 
 input {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   padding: 5px 10px;
 
   outline: 1px solid black;
@@ -32,10 +32,16 @@ input[type='checkbox'] {
 }
 
 label {
+  font-size: 1.8rem;
+}
+
+label[for='repeat'] {
+  font-family: 'Geist Mono', monospace;
   font-size: 1.4rem;
 }
 
 button {
+  font-family: 'Geist Mono', monospace;
   font-size: 1.4rem;
   padding: 5px 10px;
 }

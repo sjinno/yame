@@ -75,10 +75,12 @@ export function Timer({
           labelReadonly={labelReadonly}
           setLabelReadonly={setLabelReadonly}
         />
-        <div style={{ display: 'flex', gap: '10px' }}>
-          <p>Timer: {originalHms}</p>
-          <p>|</p>
-          <p>Time exceeding: </p>
+        <div style={{ display: 'flex', gap: '10px', fontSize: '3.2rem' }}>
+          <p>
+            Timer: <b>{originalHms}</b>
+          </p>
+          {/* <p>|</p>
+          <p>Time exceeding: </p> */}
         </div>
         <Hms
           repeat={repeat}
