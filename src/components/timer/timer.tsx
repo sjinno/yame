@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Label } from './label';
-import { Hms } from './hms';
+
 import { Controller } from './controller';
-import { Hms as HmsType, TimerStatus } from '../../types';
-import { useDebounce } from '../../hooks';
-import { ProgressBar } from '../progress-bar';
 import { formatDuration } from '../../utils/timer';
+import { Hms } from './hms';
+import { Hms as HmsType, TimerStatus } from '../../types';
+import { Label } from './label';
+import { ProgressBar } from '../progress-bar';
+import { useDebounce } from '../../hooks';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
@@ -42,6 +43,7 @@ export function Timer({
   const [labelReadonly, setLabelReadonly] = useState(true);
   const [isTimerReady, setIsTimerReady] = useState(false);
   const [isTimerResettable, setIsTimerResettable] = useState(false);
+  const [typing, setTyping] = useState(false);
   const [timerStatus, setTimerStatus] = useState<TimerStatus>('idle');
 
   const debouncedLabel = useDebounce(label, 500);
@@ -54,16 +56,19 @@ export function Timer({
     setIsTimerResettable(!(h1 === h2 && m1 === m2 && s1 === s2));
   }, [debouncedLabel, hms, originalHms, repeat]);
 
-  useEffect(() => {
-    if (timerStatus === 'stopped') {
-      const { hours, minutes, seconds } = originalHms;
-      setHms({ hours, minutes, seconds });
-      setTimerStatus('idle');
-    }
-  }, [timerStatus]);
-
   const updateLabel = (label: string) => setLabel(label);
   const updateLabelReadonly = (readonly: boolean) => setLabelReadonly(readonly);
+  const updateTyping = (typing: boolean) => setTyping(typing);
+  const updateTimerStatus = (status: TimerStatus) => setTimerStatus(status);
+
+  const clearHms = () => {
+    if (timerStatus !== 'ongoing') {
+      setHms({ hours: 0, minutes: 0, seconds: 0 });
+      setOriginalHms({ hours: 0, minutes: 0, seconds: 0 });
+    }
+  };
+
+  const repeatTimer = () => setRepeat((prev) => !prev);
 
   return (
     <div
@@ -80,46 +85,44 @@ export function Timer({
           onLabelUpdate={updateLabel}
           onReadonlyUpdate={updateLabelReadonly}
         />
-        <div
-          style={{
-            display: 'flex',
-            gap: '10px',
-            alignItems: 'center',
-            fontSize: '4.2rem',
-            marginBlock: '5px',
-          }}
-        >
-          <span style={{ fontSize: '2.8rem' }}>Timer:</span>{' '}
-          <b>
-            {formatDuration(hms.hours ?? 0)}:{formatDuration(hms.minutes ?? 0)}:
-            {formatDuration(hms.seconds ?? 0)}
-          </b>
+        <div style={{ marginBlock: '10px' }}>
+          <div style={{ fontSize: '4.2rem' }}>
+            <div style={{ fontSize: '1.4rem' }}>time remaining:</div>
+            <div
+              style={{
+                fontFamily: '"Comic Code", "Geist Mono", monospace',
+                fontWeight: 'bold',
+                fontSize: '4.8rem',
+                marginBlock: '-10px',
+              }}
+            >
+              {formatDuration(hms.hours ?? 0)}:
+              {formatDuration(hms.minutes ?? 0)}:
+              {formatDuration(hms.seconds ?? 0)}
+            </div>
+          </div>
+          <ProgressBar hms={hms} originalHms={originalHms} />
         </div>
         <Hms
           repeat={repeat}
+          typing={typing}
           timerStatus={timerStatus}
           hms={hms}
           originalHms={originalHms}
           setHms={setHms}
-          setTimerStatus={setTimerStatus}
-          setIsTimerReady={setIsTimerReady}
           setOriginalHms={setOriginalHms}
+          onUpdateTimerStatus={updateTimerStatus}
+          onUpdateTyping={updateTyping}
         />
         <Controller
           isTimerReady={isTimerReady}
           isResettable={isTimerResettable}
           repeat={repeat}
           timerStatus={timerStatus}
-          setRepeat={setRepeat}
-          setTimerStatus={setTimerStatus}
-          onClear={() => {
-            if (timerStatus !== 'playing') {
-              setHms({ hours: 0, minutes: 0, seconds: 0 });
-              setOriginalHms({ hours: 0, minutes: 0, seconds: 0 });
-            }
-          }}
+          onClear={clearHms}
+          onRepeat={repeatTimer}
+          onUpdateTimerStatus={updateTimerStatus}
         />
-        <ProgressBar hms={hms} originalHms={originalHms} />
       </div>
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>
         <button onClick={onRemove}>remove</button>

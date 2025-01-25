@@ -5,19 +5,19 @@ interface Props {
   isResettable: boolean;
   repeat: boolean;
   timerStatus: TimerStatus;
-  setRepeat: React.Dispatch<React.SetStateAction<boolean>>;
-  setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
   onClear: () => void;
+  onRepeat: () => void;
+  onUpdateTimerStatus: (status: TimerStatus) => void;
 }
 
 export function Controller({
-  isTimerReady,
   isResettable,
+  isTimerReady,
   repeat,
   timerStatus,
-  setRepeat,
-  setTimerStatus,
   onClear,
+  onRepeat,
+  onUpdateTimerStatus,
 }: Props) {
   return (
     <div
@@ -29,22 +29,22 @@ export function Controller({
       }}
     >
       <button
-        disabled={!isTimerReady || timerStatus === 'playing'}
-        onClick={() => setTimerStatus('playing')}
+        disabled={!isTimerReady || timerStatus === 'ongoing'}
+        onClick={() => onUpdateTimerStatus('ongoing')}
       >
         start
       </button>
       <button
         disabled={['idle', 'paused', 'stopped'].includes(timerStatus)}
-        onClick={() => setTimerStatus('paused')}
+        onClick={() => onUpdateTimerStatus('paused')}
       >
         pause
       </button>
       <button
-        disabled={!(isResettable || timerStatus === 'playing')}
-        onClick={() => setTimerStatus('stopped')}
+        disabled={!(isResettable || timerStatus === 'ongoing')}
+        onClick={() => onUpdateTimerStatus('reset')}
       >
-        stop & reset
+        reset
       </button>
       <button onClick={onClear}>clear</button>
       <div
@@ -60,7 +60,7 @@ export function Controller({
           name="repeat"
           id="repeat"
           checked={repeat}
-          onChange={() => setRepeat((prev) => !prev)}
+          onChange={onRepeat}
         />
         <label htmlFor="repeat">repeat</label>
       </div>

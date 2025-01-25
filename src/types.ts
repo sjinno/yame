@@ -1,6 +1,6 @@
 export type EmptyString = '';
 export type Pause = 'paused' | 'unpaused' | null;
-export type TimerStatus = 'idle' | 'playing' | 'paused' | 'stopped' | 'done';
+export type TimerStatus = 'idle' | 'ongoing' | 'paused' | 'reset' | 'done';
 
 export type Hms = {
   hours: number | null;

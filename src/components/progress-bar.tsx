@@ -16,18 +16,33 @@ export function ProgressBar({ hms, originalHms }: Props) {
   );
 }
 
-function calcProgress(hms: Hms, originalHms: Hms): number {
-  const h1 = hms.hours ?? 0;
-  const m1 = hms.minutes ?? 0;
-  const s1 = hms.seconds ?? 0;
+function calcProgress(currentHms: Hms, originalHms: Hms): number {
+  // Extract and default to 0 if null/undefined
+  const currentHours = currentHms.hours ?? 0;
+  const currentMinutes = currentHms.minutes ?? 0;
+  const currentSeconds = currentHms.seconds ?? 0;
 
-  const h2 = originalHms.hours ?? 0;
-  const m2 = originalHms.minutes ?? 0;
-  const s2 = originalHms.seconds ?? 0;
+  const originalHours = originalHms.hours ?? 0;
+  const originalMinutes = originalHms.minutes ?? 0;
+  const originalSeconds = originalHms.seconds ?? 0;
 
-  const totalSeconds = h2 * 60 * 60 + m2 * 60 + s2;
+  // Calculate total time in seconds
+  const totalOriginalTimeInSecs =
+    originalHours * 3600 + originalMinutes * 60 + originalSeconds;
 
-  return totalSeconds === 0
-    ? 0
-    : (((h2 - h1) * 60 * 60 + (m2 - m1) * 60 + (s2 - s1)) / totalSeconds) * 100;
+  if (totalOriginalTimeInSecs === 0) {
+    return 0; // Avoid division by zero
+  }
+
+  // Calculate elapsed time in seconds
+  const elapsedTimeInSecs =
+    (originalHours - currentHours) * 3600 +
+    (originalMinutes - currentMinutes) * 60 +
+    (originalSeconds - currentSeconds);
+
+  // Calculate progress as a percentage
+  const progressPercentage =
+    (elapsedTimeInSecs / totalOriginalTimeInSecs) * 100;
+
+  return progressPercentage; // You can round this if necessary
 }

@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Timer } from './components';
 import { Hms, Timer as TimerType } from './types';
+import { Timer } from './components';
 import { timersStore } from './store';
 
 import './App.css';

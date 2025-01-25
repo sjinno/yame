@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Hms as HmsType, TimerStatus } from '../../types';
+
 import { createAudioPlayer } from '../../utils';
+import { Hms as HmsType, TimerStatus } from '../../types';
+
 import RoosterSound from '../../assets/audio/hahn_kikeriki.mp3';
 
 const MAX_VALUE = 1000;
@@ -8,108 +10,32 @@ const ERROR_TIMEOUT = 2222;
 
 interface Props {
   repeat: boolean;
+  typing: boolean;
   timerStatus: TimerStatus;
   hms: HmsType;
   originalHms: HmsType;
-  setTimerStatus: React.Dispatch<React.SetStateAction<TimerStatus>>;
   setHms: React.Dispatch<React.SetStateAction<HmsType>>;
   setOriginalHms: React.Dispatch<React.SetStateAction<HmsType>>;
-  setIsTimerReady: React.Dispatch<React.SetStateAction<boolean>>;
+  onUpdateTyping: (typing: boolean) => void;
+  onUpdateTimerStatus: (status: TimerStatus) => void;
 }
 
 export function Hms({
   repeat,
+  typing,
   timerStatus,
   hms,
   originalHms,
   setHms,
-  setTimerStatus,
   setOriginalHms,
-  setIsTimerReady,
+  onUpdateTyping,
+  onUpdateTimerStatus,
 }: Props) {
-  const [typing, setTyping] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<number | undefined>(undefined);
 
   const roosterPlayer = createAudioPlayer(RoosterSound);
-
-  useEffect(() => {
-    if (timerStatus === 'done') {
-      clearInterval(timer);
-
-      const onSoundEnd = () => {
-        const { hours, minutes, seconds } = originalHms;
-        setHms({ hours, minutes, seconds });
-        if (repeat) {
-          setTimerStatus('playing');
-        } else {
-          setTimerStatus('idle');
-        }
-      };
-
-      const kikeriki = async () => {
-        // Play sound and wait for it to finish
-        await roosterPlayer.play(onSoundEnd);
-      };
-      kikeriki();
-
-      return;
-    }
-
-    if (timerStatus == 'playing') {
-      const interval = setInterval(() => {
-        setHms((prev) => ({
-          ...prev,
-          seconds: prev.seconds !== null ? prev.seconds - 1 : 0,
-        }));
-      }, 1000);
-
-      setTimer(interval);
-
-      return () => clearInterval(interval);
-    }
-  }, [timerStatus]);
-
-  useEffect(() => {
-    if (timerStatus !== 'playing') return;
-
-    const { hours, seconds, minutes } = hms;
-
-    // Time's up!
-    if (
-      timerStatus === 'playing' &&
-      seconds !== null &&
-      seconds < 1 &&
-      minutes === 0 &&
-      hours === 0
-    ) {
-      return setTimerStatus('done');
-    }
-
-    if (seconds !== null && seconds < 0) {
-      // If `seconds` is below `0` and `minutes` is not `0`,
-      // then refill `seconds` and decrement `minutes` by `1`.
-      if (minutes !== 0) {
-        setHms(({ hours, minutes }) => ({
-          hours,
-          minutes: minutes !== null ? minutes - 1 : 0,
-          seconds: 59,
-        }));
-        return;
-      }
-
-      // If `seconds` and `minutes` are both `0`, but `hours` is not,
-      // then refill `minutes` and `seconds` and decrement `hours` by `1`.
-      if (hours !== 0) {
-        setHms(({ hours }) => ({
-          hours: hours !== null ? hours - 1 : 0,
-          minutes: 59,
-          seconds: 59,
-        }));
-        return;
-      }
-    }
-  }, [hms]);
 
   const updateZeroToNull = (hms: HmsType): HmsType => ({
     hours: hms.hours || null,
@@ -117,56 +43,16 @@ export function Hms({
     seconds: hms.seconds || null,
   });
 
-  useEffect(() => {
-    if (typing && timerStatus === 'paused') {
-      setOriginalHms(hms);
-    }
+  const updateNullToZero = (hms: HmsType): HmsType => ({
+    hours: hms.hours ?? 0,
+    minutes: hms.minutes ?? 0,
+    seconds: hms.seconds ?? 0,
+  });
 
-    // If `typing` is `true`, then replace `0` with `null`?
-    if (typing) {
-      if (Object.values(originalHms).some((v) => v === 0)) {
-        setOriginalHms((prev) => updateZeroToNull(prev));
-      }
-      return;
-    }
-
-    // If `typing` is `false`, then replace `null` with `0`.
-    {
-      const updateNullToZero = (hms: HmsType): HmsType => ({
-        hours: hms.hours ?? 0,
-        minutes: hms.minutes ?? 0,
-        seconds: hms.seconds ?? 0,
-      });
-
-      if (Object.values(originalHms).some((v) => v === null)) {
-        setOriginalHms((prev) => updateNullToZero(prev));
-      }
-    }
-  }, [typing]);
-
-  useEffect(() => {
-    if (!typing && timerStatus !== 'idle') {
-      setHms(originalHms);
-      return;
-    }
-
-    if (typing && timerStatus === 'paused') {
-      if (Object.values(originalHms).some((v) => v === 0)) {
-        setOriginalHms((prev) => updateZeroToNull(prev));
-      }
-      return;
-    }
-
-    if (typing) {
-      setHms(originalHms);
-      return;
-    }
-  }, [originalHms]);
-
-  async function setDuration(
+  const setDuration = async (
     e: React.ChangeEvent<HTMLInputElement>,
     type: keyof HmsType
-  ) {
+  ) => {
     const isEmpty = e.target.value === '';
     const inp = isEmpty ? null : parseInt(e.target.value);
 
@@ -183,10 +69,6 @@ export function Hms({
       return;
     }
 
-    // This is fine, but I can probably move this some other place
-    // that makes more sense to call this from.
-    setIsTimerReady(inp !== 0);
-
     switch (type) {
       case 'hours':
         return setOriginalHms((prev) => ({ ...prev, hours: inp }));
@@ -195,7 +77,151 @@ export function Hms({
       case 'seconds':
         return setOriginalHms((prev) => ({ ...prev, seconds: inp }));
     }
-  }
+  };
+
+  const handleFocus = () => timerStatus !== 'ongoing' && onUpdateTyping(true);
+  const handleBlur = () => onUpdateTyping(false);
+
+  const onIdle = () => {
+    console.log('shohei - idle');
+  };
+
+  const onPlay = () => {
+    console.log('shohei - play');
+    const timer = setInterval(() => {
+      setHms((prev) => {
+        const secs = prev.seconds ?? 0;
+        return {
+          ...prev,
+          seconds: secs ? secs - 1 : 0,
+        };
+      });
+    }, 1000);
+
+    setTimer(timer);
+  };
+
+  const onPause = () => {
+    console.log('shohei - pause');
+    clearInterval(timer);
+  };
+
+  const onReset = () => {
+    console.log('shohei - reset');
+    clearInterval(timer);
+    const { hours, minutes, seconds } = originalHms;
+    setHms({ hours, minutes, seconds });
+    onUpdateTimerStatus('idle');
+  };
+
+  const onDone = () => {
+    console.log('shohei - done');
+    clearInterval(timer);
+
+    const onSoundEnd = () => {
+      const { hours, minutes, seconds } = originalHms;
+      setHms({ hours, minutes, seconds });
+      repeat ? onUpdateTimerStatus('ongoing') : onUpdateTimerStatus('idle');
+    };
+
+    const kikeriki = async () => {
+      // Play sound and wait for it to finish
+      await roosterPlayer.play(onSoundEnd);
+    };
+
+    kikeriki();
+  };
+
+  useEffect(() => {
+    switch (timerStatus) {
+      case 'idle':
+        onIdle();
+        break;
+      case 'ongoing':
+        onPlay();
+        break;
+      case 'paused':
+        onPause();
+        break;
+      case 'reset':
+        onReset();
+        break;
+      case 'done':
+        onDone();
+        break;
+    }
+
+    return () => clearInterval(timer);
+  }, [timerStatus]);
+
+  useEffect(() => {
+    const ongoing = timerStatus === 'ongoing';
+    // AUDITY: wut, this seems wrong lol
+    if (!ongoing) return;
+
+    const hrs = hms.hours ?? 0;
+    const mins = hms.minutes ?? 0;
+    const secs = hms.seconds ?? 0;
+
+    // Time's up!
+    const isTimeUp = ongoing && secs < 1 && mins === 0 && hrs === 0;
+    if (isTimeUp) {
+      return onUpdateTimerStatus('done');
+    }
+
+    if (secs < 1) {
+      // If `seconds` is below `0` and `minutes` is not `0`,
+      // then refill `seconds` and decrement `minutes` by `1`.
+      if (mins !== 0) {
+        setHms(({ hours, minutes }) => ({
+          hours,
+          minutes: minutes !== null ? minutes - 1 : 0,
+          seconds: 59,
+        }));
+        return;
+      }
+
+      // If `seconds` and `minutes` are both `0`, but `hours` is not,
+      // then refill `minutes` and `seconds` and decrement `hours` by `1`.
+      if (hrs !== 0) {
+        setHms(({ hours }) => ({
+          hours: hours !== null ? hours - 1 : 0,
+          minutes: 59,
+          seconds: 59,
+        }));
+        return;
+      }
+    }
+  }, [hms]);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    // If this is the first time loading, don't update the current timer.
+    if (!mounted) return;
+    setHms(originalHms);
+  }, [originalHms]);
+
+  useEffect(() => {
+    if (typing && timerStatus === 'paused') {
+      setOriginalHms(hms);
+    }
+
+    // If `typing` is `true`, then replace `0` with `null`?
+    if (typing) {
+      if (Object.values(originalHms).some((v) => v === 0)) {
+        setOriginalHms((prev) => updateZeroToNull(prev));
+      }
+      return;
+    }
+
+    // If `typing` is `false`, then replace `null` with `0`.
+    if (Object.values(originalHms).some((v) => v === null)) {
+      setOriginalHms((prev) => updateNullToZero(prev));
+    }
+  }, [typing]);
 
   return (
     <>
@@ -218,16 +244,16 @@ export function Hms({
         >
           <input
             type="text"
-            readOnly={timerStatus === 'playing'}
+            readOnly={timerStatus === 'ongoing'}
             value={originalHms.hours ?? ''}
             placeholder={'0-1000'}
-            onFocus={() => timerStatus !== 'playing' && setTyping(true)}
-            onBlur={() => setTyping(false)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'hours')}
             style={{
               width: '100%',
               textAlign: 'right',
-              pointerEvents: timerStatus === 'playing' ? 'none' : 'auto',
+              pointerEvents: timerStatus === 'ongoing' ? 'none' : 'auto',
             }}
           />
           <span>h</span>
@@ -243,16 +269,16 @@ export function Hms({
         >
           <input
             type="text"
-            readOnly={timerStatus === 'playing'}
+            readOnly={timerStatus === 'ongoing'}
             value={originalHms.minutes ?? ''}
             placeholder={'0-1000'}
-            onFocus={() => timerStatus !== 'playing' && setTyping(true)}
-            onBlur={() => setTyping(false)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'minutes')}
             style={{
               width: '100%',
               textAlign: 'right',
-              pointerEvents: timerStatus === 'playing' ? 'none' : 'auto',
+              pointerEvents: timerStatus === 'ongoing' ? 'none' : 'auto',
             }}
           />
           <span>m</span>
@@ -268,16 +294,16 @@ export function Hms({
         >
           <input
             type="text"
-            readOnly={timerStatus === 'playing'}
+            readOnly={timerStatus === 'ongoing'}
             value={originalHms.seconds ?? ''}
             placeholder={'0-1000'}
-            onFocus={() => timerStatus !== 'playing' && setTyping(true)}
-            onBlur={() => setTyping(false)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'seconds')}
             style={{
               width: '100%',
               textAlign: 'right',
-              pointerEvents: timerStatus === 'playing' ? 'none' : 'auto',
+              pointerEvents: timerStatus === 'ongoing' ? 'none' : 'auto',
             }}
           />
           <span>s</span>
