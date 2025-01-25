@@ -75,13 +75,18 @@ export function Timer({
           labelReadonly={labelReadonly}
           setLabelReadonly={setLabelReadonly}
         />
-        <div style={{ display: 'flex', gap: '10px', fontSize: '3.2rem' }}>
-          <p>
-            Timer:{' '}
-            <b>
-              {hms.hours ?? 0}:{hms.minutes ?? 0}:{hms.seconds ?? 0}
-            </b>
-          </p>
+        <div
+          style={{
+            display: 'flex',
+            gap: '10px',
+            alignItems: 'center',
+            fontSize: '4.2rem',
+          }}
+        >
+          <span style={{ fontSize: '2.8rem' }}>Timer:</span>{' '}
+          <b>
+            {hms.hours ?? 0}:{hms.minutes ?? 0}:{hms.seconds ?? 0}
+          </b>
           {/* <p>|</p>
           <p>Time exceeding: </p> */}
         </div>

@@ -226,7 +226,11 @@ export function Hms({
             onFocus={() => timerStatus !== 'playing' && setTyping(true)}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'hours')}
-            style={{ width: '100%', textAlign: 'right' }}
+            style={{
+              width: '100%',
+              textAlign: 'right',
+              pointerEvents: timerStatus === 'playing' ? 'none' : 'auto',
+            }}
           />
           <span>h</span>
         </div>
@@ -247,7 +251,11 @@ export function Hms({
             onFocus={() => timerStatus !== 'playing' && setTyping(true)}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'minutes')}
-            style={{ width: '100%', textAlign: 'right' }}
+            style={{
+              width: '100%',
+              textAlign: 'right',
+              pointerEvents: timerStatus === 'playing' ? 'none' : 'auto',
+            }}
           />
           <span>m</span>
         </div>
@@ -268,7 +276,11 @@ export function Hms({
             onFocus={() => timerStatus !== 'playing' && setTyping(true)}
             onBlur={() => setTyping(false)}
             onChange={(e) => setDuration(e, 'seconds')}
-            style={{ width: '100%', textAlign: 'right' }}
+            style={{
+              width: '100%',
+              textAlign: 'right',
+              pointerEvents: timerStatus === 'playing' ? 'none' : 'auto',
+            }}
           />
           <span>s</span>
         </div>
