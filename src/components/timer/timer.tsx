@@ -5,6 +5,7 @@ import { Controller } from './controller';
 import { Hms as HmsType, TimerStatus } from '../../types';
 import { useDebounce } from '../../hooks';
 import { ProgressBar } from '../progress-bar';
+import { formatDuration } from '../../utils/timer';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
@@ -82,11 +83,13 @@ export function Timer({
             gap: '10px',
             alignItems: 'center',
             fontSize: '4.2rem',
+            marginBlock: '5px',
           }}
         >
           <span style={{ fontSize: '2.8rem' }}>Timer:</span>{' '}
           <b>
-            {hms.hours ?? 0}:{hms.minutes ?? 0}:{hms.seconds ?? 0}
+            {formatDuration(hms.hours ?? 0)}:{formatDuration(hms.minutes ?? 0)}:
+            {formatDuration(hms.seconds ?? 0)}
           </b>
           {/* <p>|</p>
           <p>Time exceeding: </p> */}
