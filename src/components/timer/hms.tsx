@@ -111,19 +111,23 @@ export function Hms({
     }
   }, [hms]);
 
+  const updateZeroToNull = (hms: HmsType): HmsType => ({
+    hours: hms.hours || null,
+    minutes: hms.minutes || null,
+    seconds: hms.seconds || null,
+  });
+
   useEffect(() => {
+    if (typing && timerStatus === 'paused') {
+      console.log('shohei - haro');
+      setOriginalHms(hms);
+    }
+
     // If `typing` is `true`, then replace `0` with `null`?
     if (typing) {
-      const updateZeroToNull = (hms: HmsType): HmsType => ({
-        hours: hms.hours || null,
-        minutes: hms.minutes || null,
-        seconds: hms.seconds || null,
-      });
-
       if (Object.values(originalHms).some((v) => v === 0)) {
         setOriginalHms((prev) => updateZeroToNull(prev));
       }
-
       return;
     }
 
@@ -144,6 +148,14 @@ export function Hms({
   useEffect(() => {
     if (!typing) {
       setHms(originalHms);
+      return;
+    }
+
+    if (typing && timerStatus === 'paused') {
+      if (Object.values(originalHms).some((v) => v === 0)) {
+        setOriginalHms((prev) => updateZeroToNull(prev));
+      }
+      return;
     }
   }, [originalHms]);
 
