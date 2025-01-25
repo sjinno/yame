@@ -4,6 +4,7 @@ import { Hms } from './hms';
 import { Controller } from './controller';
 import { Hms as HmsType, TimerStatus } from '../../types';
 import { useDebounce } from '../../hooks';
+import { ProgressBar } from '../progress-bar';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
@@ -114,6 +115,7 @@ export function Timer({
             }
           }}
         />
+        <ProgressBar hms={hms} originalHms={originalHms} />
       </div>
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>
         <button onClick={onRemove}>remove</button>

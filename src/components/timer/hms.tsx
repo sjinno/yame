@@ -119,7 +119,6 @@ export function Hms({
 
   useEffect(() => {
     if (typing && timerStatus === 'paused') {
-      console.log('shohei - haro');
       setOriginalHms(hms);
     }
 
