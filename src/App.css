@@ -12,11 +12,11 @@ html {
 }
 
 body {
-  font-size: 2rem;
+  font-size: 1.6rem;
 }
 
 input {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   padding: 5px 10px;
 
   outline: 1px solid black;
@@ -32,7 +32,7 @@ input[type='checkbox'] {
 }
 
 label {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
 }
 
 label[for='repeat'] {
