@@ -231,7 +231,7 @@ export function Hms({
 
   return (
     <>
-      <div className="my-3 text-sm border-1 border-solid border-black flex gap-3 px-4 py-2">
+      <div className="mt-1.5 mb-2 text-sm border-1 border-solid border-black flex gap-3 px-4 py-2">
         <div className="w-[30%] flex gap-0.5">
           <input
             type="text"

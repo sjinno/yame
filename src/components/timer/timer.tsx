@@ -71,7 +71,7 @@ export function Timer({
   const repeatTimer = () => setRepeat((prev) => !prev);
 
   return (
-    <div className="w-[300px] mx-auto my-6 px-3 py-1.5 border-1 border-black border-solid">
+    <div className="w-[300px] mx-auto my-6 px-3 pt-2 py-3 border-1 border-black border-solid">
       <div>
         <Label
           label={label}
@@ -113,7 +113,7 @@ export function Timer({
       </div>
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>
         <button
-          className="text-sm border-1 border-solid border-black px-1 y-0.5 bg-rose-200"
+          className="text-sm border-1 border-solid border-black px-1.5 y-0.5"
           onClick={onRemove}
         >
           remove

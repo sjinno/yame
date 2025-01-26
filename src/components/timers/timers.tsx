@@ -72,8 +72,13 @@ export function Timers() {
             />
           ))}
       </Container>
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={addTimer}>add a new timer</button>
+      <div className="text-center">
+        <button
+          className="border-1 border-solid border-black p-1.5 rounded-sm"
+          onClick={addTimer}
+        >
+          add a new timer
+        </button>
       </div>
     </>
   );

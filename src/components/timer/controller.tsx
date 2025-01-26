@@ -63,7 +63,9 @@ export function Controller({
           checked={repeat}
           onChange={onRepeat}
         />
-        <label htmlFor="repeat">repeat</label>
+        <label htmlFor="repeat" className="mt-[-2px]">
+          repeat
+        </label>
       </div>
     </div>
   );
