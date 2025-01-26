@@ -18,7 +18,7 @@ export function Label({
         value={label}
         placeholder="label"
         readOnly={labelReadonly}
-        onClick={() => onReadonlyUpdate(false)}
+        onFocus={() => onReadonlyUpdate(false)}
         onBlur={() => onReadonlyUpdate(true)}
         onChange={(e) => onLabelUpdate(e.target.value)}
         autoCorrect="off"
