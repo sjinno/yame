@@ -79,7 +79,7 @@ export function Timer({
           onLabelUpdate={updateLabel}
           onReadonlyUpdate={updateLabelReadonly}
         />
-        {/* <div>
+        <div>
           <div className="my-1.5">
             <div className="text-xs ml-0.5">time remaining:</div>
             <div className="text-5xl mt-0.5">
@@ -89,7 +89,7 @@ export function Timer({
             </div>
           </div>
           <ProgressBar hms={hms} originalHms={originalHms} />
-        </div> */}
+        </div>
         <Hms
           repeat={repeat}
           typing={typing}

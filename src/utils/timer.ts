@@ -1,3 +1,4 @@
 export function formatDuration(d: number): string {
-  return d / 10 < 1 ? `0${d}` : d.toString();
+  const d_ = d < 0 ? 0 : d;
+  return d_ / 10 < 1 ? `0${d_}` : d_.toString();
 }

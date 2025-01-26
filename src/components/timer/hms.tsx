@@ -97,7 +97,7 @@ export function Hms({
         const secs = prev.seconds ?? 0;
         return {
           ...prev,
-          seconds: secs ? secs - 1 : 0,
+          seconds: secs > -1 ? secs - 1 : 0,
         };
       });
     }, 1000);
@@ -163,9 +163,13 @@ export function Hms({
     // AUDITY: wut, this seems wrong lol
     if (!ongoing) return;
 
+    console.log('shohei - hms', hms);
+
     const hrs = hms.hours ?? 0;
     const mins = hms.minutes ?? 0;
     const secs = hms.seconds ?? 0;
+
+    console.log('shohei - {hrs,mins,secs}', { hrs, mins, secs });
 
     // Time's up!
     const isTimeUp = ongoing && secs < 1 && mins === 0 && hrs === 0;
@@ -173,7 +177,7 @@ export function Hms({
       return onUpdateTimerStatus('done');
     }
 
-    if (secs < 1) {
+    if (secs < 0) {
       // If `seconds` is below `0` and `minutes` is not `0`,
       // then refill `seconds` and decrement `minutes` by `1`.
       if (mins !== 0) {
