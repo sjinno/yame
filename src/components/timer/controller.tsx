@@ -20,33 +20,34 @@ export function Controller({
   onUpdateTimerStatus,
 }: Props) {
   return (
-    <div
-      style={{
-        display: 'flex',
-        gap: '10px',
-        alignItems: 'center',
-        paddingBlock: '5px',
-      }}
-    >
+    <div className="flex gap-[10px] align-middle py-[5px] text-sm ml-0.5">
       <button
+        className="border-1 border-solid border-black px-1"
         disabled={!isTimerReady || timerStatus === 'ongoing'}
         onClick={() => onUpdateTimerStatus('ongoing')}
       >
         start
       </button>
       <button
+        className="border-1 border-solid border-black px-1"
         disabled={['idle', 'paused', 'stopped'].includes(timerStatus)}
         onClick={() => onUpdateTimerStatus('paused')}
       >
         pause
       </button>
       <button
+        className="border-1 border-solid border-black px-1"
         disabled={!(isResettable || timerStatus === 'ongoing')}
         onClick={() => onUpdateTimerStatus('reset')}
       >
         reset
       </button>
-      <button onClick={onClear}>clear</button>
+      <button
+        className="border-1 border-solid border-black px-1"
+        onClick={onClear}
+      >
+        clear
+      </button>
       <div
         style={{
           display: 'flex',

@@ -7,12 +7,12 @@ interface Props {
 
 export function ProgressBar({ hms, originalHms }: Props) {
   return (
-    <progress
-      id="file"
-      value={calcProgress(hms, originalHms)}
-      max="100"
-      style={{ width: '365px' }}
-    />
+    <div className="w-[calc(100%-2px)] bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 mt-2 ml-0.5">
+      <div
+        className="bg-blue-600 h-1.5 rounded-full"
+        style={{ width: `${calcProgress(hms, originalHms)}%` }}
+      ></div>
+    </div>
   );
 }
 

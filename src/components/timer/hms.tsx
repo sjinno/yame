@@ -5,6 +5,7 @@ import { Hms as HmsType, TimerStatus } from '../../types';
 import { useDebounce } from '../../hooks';
 
 import RoosterSound from '../../assets/audio/hahn_kikeriki.mp3';
+import clsx from 'clsx';
 
 const MAX_VALUE = 1000;
 const ERROR_TIMEOUT = 2222;
@@ -230,23 +231,8 @@ export function Hms({
 
   return (
     <>
-      <div
-        style={{
-          display: 'flex',
-          gap: '12px',
-          paddingBlock: '5px',
-          width: '100%',
-        }}
-      >
-        <div
-          style={{
-            display: 'flex',
-            gap: '6px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '30%',
-          }}
-        >
+      <div className="my-3 text-sm border-1 border-solid border-black flex gap-3 px-4 py-2">
+        <div className="w-[30%] flex gap-0.5">
           <input
             type="text"
             readOnly={timerStatus === 'ongoing'}
@@ -255,23 +241,16 @@ export function Hms({
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'hours')}
-            style={{
-              width: '100%',
-              textAlign: 'right',
-              pointerEvents: timerStatus === 'ongoing' ? 'none' : 'auto',
-            }}
+            className={clsx(
+              'w-full text-right',
+              timerStatus === 'ongoing' ? 'none' : 'auto',
+              'focus:text-2xl focus:pr-2',
+              'placeholder:!text-sm'
+            )}
           />
           <span>h</span>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            gap: '6px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '30%',
-          }}
-        >
+        <div className="w-[30%] flex gap-0.5">
           <input
             type="text"
             readOnly={timerStatus === 'ongoing'}
@@ -280,23 +259,16 @@ export function Hms({
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'minutes')}
-            style={{
-              width: '100%',
-              textAlign: 'right',
-              pointerEvents: timerStatus === 'ongoing' ? 'none' : 'auto',
-            }}
+            className={clsx(
+              'w-full text-right',
+              timerStatus === 'ongoing' ? 'none' : 'auto',
+              'focus:text-2xl focus:pr-2',
+              'placeholder:!text-sm'
+            )}
           />
           <span>m</span>
         </div>
-        <div
-          style={{
-            display: 'flex',
-            gap: '6px',
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '30%',
-          }}
-        >
+        <div className="w-[30%] flex gap-0.5">
           <input
             type="text"
             readOnly={timerStatus === 'ongoing'}
@@ -305,11 +277,12 @@ export function Hms({
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'seconds')}
-            style={{
-              width: '100%',
-              textAlign: 'right',
-              pointerEvents: timerStatus === 'ongoing' ? 'none' : 'auto',
-            }}
+            className={clsx(
+              'w-full text-right',
+              timerStatus === 'ongoing' ? 'none' : 'auto',
+              'focus:text-2xl focus:pr-2',
+              'placeholder:!text-sm'
+            )}
           />
           <span>s</span>
         </div>
@@ -317,4 +290,8 @@ export function Hms({
       {error && <p style={{ color: 'red', textAlign: 'center' }}>{error}</p>}
     </>
   );
+}
+
+function Input() {
+  return <></>;
 }

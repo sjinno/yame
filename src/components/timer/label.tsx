@@ -12,7 +12,7 @@ export function Label({
   onReadonlyUpdate,
 }: Props) {
   return (
-    <div style={{ paddingBlock: '5px' }}>
+    <div className="ml-0.5">
       <input
         type="text"
         value={label}
@@ -22,6 +22,7 @@ export function Label({
         onBlur={() => onReadonlyUpdate(true)}
         onChange={(e) => onLabelUpdate(e.target.value)}
         autoCorrect="off"
+        className="focus:bg-amber-100 focus:p-2 focus:text-xl"
       />
     </div>
   );

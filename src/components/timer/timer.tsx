@@ -71,13 +71,7 @@ export function Timer({
   const repeatTimer = () => setRepeat((prev) => !prev);
 
   return (
-    <div
-      style={{
-        border: '1px solid black',
-        padding: '10px 15px',
-        marginBlock: '15px',
-      }}
-    >
+    <div className="w-[300px] mx-auto my-6 px-3 py-1.5 border-1 border-black border-solid">
       <div>
         <Label
           label={label}
@@ -85,24 +79,17 @@ export function Timer({
           onLabelUpdate={updateLabel}
           onReadonlyUpdate={updateLabelReadonly}
         />
-        <div style={{ marginBlock: '10px' }}>
-          <div style={{ fontSize: '4.2rem' }}>
-            <div style={{ fontSize: '1.4rem' }}>time remaining:</div>
-            <div
-              style={{
-                fontFamily: '"Comic Code", "Geist Mono", monospace',
-                fontWeight: 'bold',
-                fontSize: '4.8rem',
-                marginBlock: '-10px',
-              }}
-            >
+        {/* <div>
+          <div className="my-1.5">
+            <div className="text-xs ml-0.5">time remaining:</div>
+            <div className="text-5xl mt-0.5">
               {formatDuration(hms.hours ?? 0)}:
               {formatDuration(hms.minutes ?? 0)}:
               {formatDuration(hms.seconds ?? 0)}
             </div>
           </div>
           <ProgressBar hms={hms} originalHms={originalHms} />
-        </div>
+        </div> */}
         <Hms
           repeat={repeat}
           typing={typing}
@@ -125,7 +112,12 @@ export function Timer({
         />
       </div>
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>
-        <button onClick={onRemove}>remove</button>
+        <button
+          className="text-sm border-1 border-solid border-black px-1 y-0.5 bg-rose-200"
+          onClick={onRemove}
+        >
+          remove
+        </button>
       </div>
     </div>
   );
