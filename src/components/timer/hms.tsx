@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { createAudioPlayer } from '../../utils';
 import { Hms as HmsType, TimerStatus } from '../../types';
+import { useDebounce } from '../../hooks';
 
 import RoosterSound from '../../assets/audio/hahn_kikeriki.mp3';
 
@@ -34,6 +35,8 @@ export function Hms({
   const [mounted, setMounted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [timer, setTimer] = useState<number | undefined>(undefined);
+
+  const debouncedTyping = useDebounce(typing, 10);
 
   const roosterPlayer = createAudioPlayer(RoosterSound);
 
@@ -205,23 +208,25 @@ export function Hms({
   }, [originalHms]);
 
   useEffect(() => {
-    if (typing && timerStatus === 'paused') {
+    if (debouncedTyping && timerStatus === 'paused') {
       setOriginalHms(hms);
     }
 
-    // If `typing` is `true`, then replace `0` with `null`?
-    if (typing) {
+    console.log('shohei - debouncedTyping', debouncedTyping);
+
+    // If `debouncedTyping` is `true`, then replace `0` with `null`?
+    if (debouncedTyping) {
       if (Object.values(originalHms).some((v) => v === 0)) {
         setOriginalHms((prev) => updateZeroToNull(prev));
       }
       return;
     }
 
-    // If `typing` is `false`, then replace `null` with `0`.
+    // If `debouncedTyping` is `false`, then replace `null` with `0`.
     if (Object.values(originalHms).some((v) => v === null)) {
       setOriginalHms((prev) => updateNullToZero(prev));
     }
-  }, [typing]);
+  }, [debouncedTyping]);
 
   return (
     <>
