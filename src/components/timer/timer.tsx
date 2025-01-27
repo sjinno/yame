@@ -7,6 +7,7 @@ import { Hms as HmsType, TimerStatus } from '../../types';
 import { Label } from './label';
 import { ProgressBar } from '../progress-bar';
 import { useDebounce } from '../../hooks';
+import clsx from 'clsx';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
@@ -73,7 +74,15 @@ export function Timer({
   const repeatTimer = () => setRepeat((prev) => !prev);
 
   return (
-    <div className="w-[300px] mx-auto my-6 px-3 pt-2 py-3 border-1 border-black border-solid">
+    <div
+      className={clsx(
+        'w-[300px] mx-auto my-6 px-3 pt-2 py-3',
+        'border-1 border-black border-solid',
+        timerStatus === 'ongoing' && 'bg-emerald-100',
+        timerStatus === 'paused' && 'bg-amber-100',
+        timerStatus === 'done' && 'bg-sky-100'
+      )}
+    >
       <div>
         <Label
           label={label}
@@ -116,6 +125,8 @@ export function Timer({
       <div style={{ textAlign: 'center', paddingTop: '5px' }}>
         <button
           className="text-sm border-1 border-solid border-black px-1.5 y-0.5"
+          // TODO: show a toast saying that it has to be paused before doing the remove action or you can change the behavior in the user settings
+          disabled={timerStatus === 'ongoing'}
           onClick={onRemove}
         >
           remove
