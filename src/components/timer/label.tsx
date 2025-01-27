@@ -22,7 +22,7 @@ export function Label({
         onBlur={() => onReadonlyUpdate(true)}
         onChange={(e) => onLabelUpdate(e.target.value)}
         autoCorrect="off"
-        className="focus:bg-amber-100 focus:p-2 focus:text-xl text-center"
+        className="focus:bg-amber-100 text-center"
       />
     </div>
   );

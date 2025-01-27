@@ -242,7 +242,6 @@ export function Hms({
             className={clsx(
               'w-full text-right',
               timerStatus === 'ongoing' ? 'none' : 'auto',
-              'focus:text-2xl focus:pr-2',
               'placeholder:!text-sm'
             )}
           />
@@ -260,7 +259,6 @@ export function Hms({
             className={clsx(
               'w-full text-right',
               timerStatus === 'ongoing' ? 'none' : 'auto',
-              'focus:text-2xl focus:pr-2',
               'placeholder:!text-sm'
             )}
           />
@@ -278,7 +276,6 @@ export function Hms({
             className={clsx(
               'w-full text-right',
               timerStatus === 'ongoing' ? 'none' : 'auto',
-              'focus:text-2xl focus:pr-2',
               'placeholder:!text-sm'
             )}
           />
