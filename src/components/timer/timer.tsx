@@ -62,9 +62,11 @@ export function Timer({
   const updateTimerStatus = (status: TimerStatus) => setTimerStatus(status);
 
   const clearHms = () => {
+    console.log('clear');
     if (timerStatus !== 'ongoing') {
       setHms({ hours: 0, minutes: 0, seconds: 0 });
       setOriginalHms({ hours: 0, minutes: 0, seconds: 0 });
+      setTimerStatus('idle');
     }
   };
 

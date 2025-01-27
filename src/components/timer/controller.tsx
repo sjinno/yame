@@ -37,13 +37,14 @@ export function Controller({
       </button>
       <button
         className="border-1 border-solid border-black px-1"
-        disabled={!(isResettable || timerStatus === 'ongoing')}
+        disabled={!isResettable}
         onClick={() => onUpdateTimerStatus('reset')}
       >
         reset
       </button>
       <button
         className="border-1 border-solid border-black px-1"
+        disabled={timerStatus === 'ongoing'}
         onClick={onClear}
       >
         clear
