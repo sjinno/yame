@@ -12,16 +12,6 @@ export function Timers() {
   );
   const [timers, setTimers] = useState<TimerType[]>([]);
 
-  useEffect(() => {
-    const loadTimers = async () => {
-      const store = await TimersStore.init();
-      const timers = await store.get();
-      setTimersStore(store);
-      setTimers(timers);
-    };
-    loadTimers();
-  }, []);
-
   const addTimer = async () => {
     const timer = {
       id: uuidv4(),
@@ -34,6 +24,28 @@ export function Timers() {
     await timersStore?.update(updatedTimers);
     setTimers(updatedTimers);
   };
+
+  useEffect(() => {
+    const loadTimers = async () => {
+      const store = await TimersStore.init();
+      const timers = await store.get();
+      setTimersStore(store);
+      setTimers(timers);
+    };
+    loadTimers();
+  }, []);
+
+  // TODO: maybe separate this logic into somewhere as i might have more keyboard shortcuts
+  // Add a new timer on cmd+n
+  useEffect(() => {
+    const addTimerOnCmdN = (e: KeyboardEvent) => {
+      if (e.metaKey && e.key === 'n') {
+        addTimer();
+      }
+    };
+    document.addEventListener('keydown', addTimerOnCmdN);
+    return () => document.removeEventListener('keydown', addTimerOnCmdN);
+  }, [timers]);
 
   const removeTimer = async (id: string) => {
     const updatedTimers = timers.filter((timer) => timer.id !== id);
