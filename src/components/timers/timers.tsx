@@ -74,7 +74,7 @@ export function Timers() {
       </Container>
       <div className="text-center">
         <button
-          className="border-1 border-solid border-black p-1.5 rounded-sm"
+          className="border-1 border-solid border-black p-1.5"
           onClick={addTimer}
         >
           add a new timer

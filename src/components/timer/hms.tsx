@@ -163,13 +163,9 @@ export function Hms({
     // AUDITY: wut, this seems wrong lol
     if (!ongoing) return;
 
-    console.log('shohei - hms', hms);
-
     const hrs = hms.hours ?? 0;
     const mins = hms.minutes ?? 0;
     const secs = hms.seconds ?? 0;
-
-    console.log('shohei - {hrs,mins,secs}', { hrs, mins, secs });
 
     // Time's up!
     const isTimeUp = ongoing && secs < 1 && mins === 0 && hrs === 0;
@@ -216,8 +212,6 @@ export function Hms({
     if (debouncedTyping && timerStatus === 'paused') {
       setOriginalHms(hms);
     }
-
-    console.log('shohei - debouncedTyping', debouncedTyping);
 
     // If `debouncedTyping` is `true`, then replace `0` with `null`?
     if (debouncedTyping) {
