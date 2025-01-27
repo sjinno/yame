@@ -21,6 +21,9 @@ export function Label({
         onFocus={() => onReadonlyUpdate(false)}
         onBlur={() => onReadonlyUpdate(true)}
         onChange={(e) => onLabelUpdate(e.target.value)}
+        onKeyDown={(e) =>
+          e.key === 'Enter' && (e.target as HTMLInputElement).blur()
+        }
         autoCorrect="off"
         className="focus:bg-amber-100 text-center"
       />
