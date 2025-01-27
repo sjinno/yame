@@ -125,7 +125,7 @@ export function Hms({
     const onSoundEnd = () => {
       const { hours, minutes, seconds } = originalHms;
       setHms({ hours, minutes, seconds });
-      repeat ? onUpdateTimerStatus('ongoing') : onUpdateTimerStatus('idle');
+      repeat ? onUpdateTimerStatus('ongoing') : onUpdateTimerStatus('done');
     };
 
     const kikeriki = async () => {
