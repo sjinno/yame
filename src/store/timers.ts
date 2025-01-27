@@ -2,7 +2,7 @@ import { Store } from '@tauri-apps/plugin-store';
 import { v4 as uuid4 } from 'uuid';
 import { Timer } from '../types';
 
-class TimersStore {
+export class TimersStore {
   private static instance?: TimersStore;
   private store!: Store;
 
@@ -63,5 +63,3 @@ class TimersStore {
     }
   }
 }
-
-export const timersStore = await TimersStore.init();

@@ -3,15 +3,20 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Hms, Timer as TimerType } from '../../types';
 import { Timer } from '../timer/timer';
-import { timersStore } from '../../store';
+import { TimersStore } from '../../store';
 import { Container } from './container';
 
 export function Timers() {
+  const [timersStore, setTimersStore] = useState<TimersStore | undefined>(
+    undefined
+  );
   const [timers, setTimers] = useState<TimerType[]>([]);
 
   useEffect(() => {
     const loadTimers = async () => {
-      const timers = await timersStore.get();
+      const store = await TimersStore.init();
+      const timers = await store.get();
+      setTimersStore(store);
       setTimers(timers);
     };
     loadTimers();
@@ -26,13 +31,13 @@ export function Timers() {
       repeat: false,
     };
     const updatedTimers = [...timers, timer];
-    await timersStore.update(updatedTimers);
+    await timersStore?.update(updatedTimers);
     setTimers(updatedTimers);
   };
 
   const removeTimer = async (id: string) => {
     const updatedTimers = timers.filter((timer) => timer.id !== id);
-    await timersStore.update(updatedTimers);
+    await timersStore?.update(updatedTimers);
     setTimers(updatedTimers);
   };
 
@@ -55,7 +60,7 @@ export function Timers() {
       }
       return timer;
     });
-    await timersStore.update(updatedTimers); // Persist to storage
+    await timersStore?.update(updatedTimers); // Persist to storage
     setTimers(updatedTimers); // Update local state
   };
 

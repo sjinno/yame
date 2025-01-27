@@ -1,5 +1,4 @@
 import React, { ReactNode } from 'react';
-import clsx from 'clsx';
 import './container.scss';
 
 interface Props {

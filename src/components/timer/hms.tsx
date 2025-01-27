@@ -230,6 +230,7 @@ export function Hms({
   const startTimerOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onUpdateTimerStatus('ongoing');
+      onUpdateTyping(false);
     }
   };
 
@@ -296,6 +297,6 @@ export function Hms({
   );
 }
 
-function Input() {
-  return <></>;
-}
+// function Input() {
+//   return <></>;
+// }
