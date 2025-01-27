@@ -227,6 +227,12 @@ export function Hms({
     }
   }, [debouncedTyping]);
 
+  const startTimerOnEnter = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onUpdateTimerStatus('ongoing');
+    }
+  };
+
   return (
     <>
       <div className="mt-1.5 mb-2 text-sm border-1 border-solid border-black flex gap-3 px-4 py-2">
@@ -239,6 +245,7 @@ export function Hms({
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'hours')}
+            onKeyDown={startTimerOnEnter}
             className={clsx(
               'w-full text-right',
               timerStatus === 'ongoing' ? 'none' : 'auto',
@@ -256,6 +263,7 @@ export function Hms({
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'minutes')}
+            onKeyDown={startTimerOnEnter}
             className={clsx(
               'w-full text-right',
               timerStatus === 'ongoing' ? 'none' : 'auto',
@@ -273,6 +281,7 @@ export function Hms({
             onFocus={handleFocus}
             onBlur={handleBlur}
             onChange={(e) => setDuration(e, 'seconds')}
+            onKeyDown={startTimerOnEnter}
             className={clsx(
               'w-full text-right',
               timerStatus === 'ongoing' ? 'none' : 'auto',
