@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { ControllerProps } from './controller';
 import { createAudioPlayer } from '../../utils';
@@ -53,6 +53,17 @@ export function Timer({
 
   const debouncedLabel = useDebounce(label, 500);
 
+  const timerRef = useRef<number | null>(null);
+  const roosterPlayer = createAudioPlayer(RoosterSound);
+
+  // Cleanup when the component unmounts
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current);
+      roosterPlayer.drop();
+    };
+  }, []);
+
   useEffect(() => {
     onUpdateTimer(id, debouncedLabel, repeat, hms, originalHms);
     const { hours: h1, minutes: m1, seconds: s1 } = hms;
@@ -60,9 +71,6 @@ export function Timer({
     setIsTimerReady([h2, m2, s2].some((v) => !!v));
     setIsTimerResettable(!(h1 === h2 && m1 === m2 && s1 === s2));
   }, [debouncedLabel, hms, originalHms, repeat]);
-
-  const [timer, setTimer] = useState<number | undefined>(undefined);
-  const roosterPlayer = createAudioPlayer(RoosterSound);
 
   const updateLabel = (label: string) => setLabel(label);
   const updateLabelReadonly = (readonly: boolean) => setLabelReadonly(readonly);
@@ -86,7 +94,9 @@ export function Timer({
 
   const onPlay = () => {
     console.log('shohei - play');
-    const timer = setInterval(() => {
+    if (timerRef.current) clearInterval(timerRef.current); // Ensure no duplicate intervals
+
+    timerRef.current = setInterval(() => {
       setHms((prev) => {
         const secs = prev.seconds ?? 0;
         return {
@@ -95,26 +105,26 @@ export function Timer({
         };
       });
     }, 1000);
-
-    setTimer(timer);
   };
 
   const onPause = () => {
     console.log('shohei - pause');
-    clearInterval(timer);
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null; // Ensure it's reset
+    }
   };
 
   const onReset = () => {
     console.log('shohei - reset');
-    clearInterval(timer);
-    const { hours, minutes, seconds } = originalHms;
-    setHms({ hours, minutes, seconds });
+    onPause(); // Cleanup interval
+    setHms(originalHms);
     updateTimerStatus('idle');
   };
 
   const onDone = () => {
     console.log('shohei - done');
-    clearInterval(timer);
+    if (timerRef.current) clearInterval(timerRef.current); // Ensure no duplicate intervals
 
     const onSoundEnd = () => {
       const { hours, minutes, seconds } = originalHms;
@@ -150,8 +160,6 @@ export function Timer({
         onDone();
         break;
     }
-
-    return () => clearInterval(timer);
   }, [timerStatus]);
 
   useEffect(() => {
@@ -164,7 +172,7 @@ export function Timer({
     const secs = hms.seconds ?? 0;
 
     // Time's up!
-    const isTimeUp = ongoing && secs < 1 && mins === 0 && hrs === 0;
+    const isTimeUp = ongoing && secs === 0 && mins === 0 && hrs === 0;
     if (isTimeUp) {
       return updateTimerStatus('done');
     }

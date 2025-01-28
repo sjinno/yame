@@ -1,10 +1,19 @@
 export function createAudioPlayer(src: string) {
-  const audio = new Audio(src);
+  let audio: HTMLAudioElement | null = new Audio(src);
+
   return {
     play: async (cb?: () => void) => {
-      audio.currentTime = 0;
-      await audio.play();
-      if (cb) audio.onended = cb;
+      if (audio !== null) {
+        audio.currentTime = 0;
+        await audio.play();
+        if (cb) audio.onended = cb;
+      }
+    },
+    drop: () => {
+      if (audio) {
+        audio.onended = null; // Remove event listener
+        audio = null;
+      }
     },
   };
 }
