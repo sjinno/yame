@@ -160,6 +160,10 @@ export function Timer({
         onDone();
         break;
     }
+
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current); // Cleanup when status changes
+    };
   }, [timerStatus]);
 
   useEffect(() => {
