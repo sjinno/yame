@@ -7,6 +7,12 @@ import { Label } from './label';
 import { useDebounce } from '../../hooks';
 import clsx from 'clsx';
 import { TimerDisplay } from './timer-display';
+import { TimerCard } from './timer-card';
+import { TimerBody } from './timer-body';
+import { TimerFooter } from './timer-footer';
+import { LabelProps, TimerHeader } from './timer-header';
+
+import './timer-card.scss';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
@@ -72,57 +78,42 @@ export function Timer({
 
   const repeatTimer = () => setRepeat((prev) => !prev);
 
+  const labelProps = {
+    label,
+    labelReadonly,
+    updateLabel,
+    updateLabelReadonly,
+  } satisfies LabelProps;
+
   return (
-    <div
-      className={clsx(
-        'w-[300px] mx-auto my-6 px-3 pt-2 py-3',
-        'border-1 border-black border-solid',
-        timerStatus === 'ongoing' && 'bg-emerald-100',
-        timerStatus === 'paused' && 'bg-amber-100',
-        timerStatus === 'done' && 'bg-sky-100'
-      )}
-    >
-      <div>
-        <Label
-          label={label}
-          labelReadonly={labelReadonly}
-          onLabelUpdate={updateLabel}
-          onReadonlyUpdate={updateLabelReadonly}
-        />
-        <div>
-          <TimerDisplay hms={hms} originalHms={originalHms} />
-          <TimerEdit
-            repeat={repeat}
-            typing={typing}
-            timerStatus={timerStatus}
-            hms={hms}
-            originalHms={originalHms}
-            setHms={setHms}
-            setOriginalHms={setOriginalHms}
-            onUpdateTimerStatus={updateTimerStatus}
-            onUpdateTyping={updateTyping}
-          />
-        </div>
-        <Controller
-          isTimerReady={isTimerReady}
-          isResettable={isTimerResettable}
-          repeat={repeat}
-          timerStatus={timerStatus}
-          onClear={clearHms}
-          onRepeat={repeatTimer}
-          onUpdateTimerStatus={updateTimerStatus}
-        />
-      </div>
-      <div style={{ textAlign: 'center', paddingTop: '5px' }}>
-        <button
-          className="text-sm border-1 border-solid border-black px-1.5 y-0.5"
-          // TODO: show a toast saying that it has to be paused before doing the remove action or you can change the behavior in the user settings
-          disabled={timerStatus === 'ongoing'}
-          onClick={onRemove}
-        >
-          remove
-        </button>
-      </div>
-    </div>
+    <TimerCard
+      headerChildren={<TimerHeader {...labelProps} />}
+      bodyChildren={<TimerBody />}
+      footerChildren={<TimerFooter />}
+    />
   );
+}
+
+{
+  /* <div
+    className={clsx(
+      'w-[300px] mx-auto my-6 px-3 pt-2 py-3',
+      'border-1 border-black border-solid',
+      timerStatus === 'ongoing' && 'bg-emerald-100',
+      timerStatus === 'paused' && 'bg-amber-100',
+      timerStatus === 'done' && 'bg-sky-100'
+    )}
+  >
+    <div></div>
+    <div style={{ textAlign: 'center', paddingTop: '5px' }}>
+      <button
+        className="text-sm border-1 border-solid border-black px-1.5 y-0.5"
+        // TODO: show a toast saying that it has to be paused before doing the remove action or you can change the behavior in the user settings
+        disabled={timerStatus === 'ongoing'}
+        onClick={onRemove}
+      >
+        remove
+      </button>
+    </div>
+  </div> */
 }
