@@ -25,7 +25,7 @@ export function TimerCard({
         'w-[256px] h-[144px] my-4 mx-auto text-sm relative',
         'border-1 border-solid border-zinc-600',
         'rounded-[10px]',
-        'bg-[#edede9] p-1.5'
+        'bg-[#fff] p-1.5'
       )}
     >
       <div className={clsx('card_header card_child', 'h-[25%]')}>
