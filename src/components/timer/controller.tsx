@@ -1,6 +1,13 @@
+import {
+  CirclePauseIcon,
+  CirclePlayIcon,
+  Repeat2Icon,
+  RotateCcwIcon,
+} from 'lucide-react';
 import { TimerStatus } from '../../types';
+import clsx from 'clsx';
 
-interface Props {
+export interface ControllerProps {
   isTimerReady: boolean;
   isResettable: boolean;
   repeat: boolean;
@@ -18,55 +25,50 @@ export function Controller({
   onClear,
   onRepeat,
   onUpdateTimerStatus,
-}: Props) {
+}: ControllerProps) {
+  const scaleIcon = 'scale-75';
+  const scaleIcon2 = 'scale-[64%]';
+
   return (
-    <div className="flex gap-[10px] align-middle py-[5px] text-sm ml-0.5">
+    <div className="flex gap-2 justify-center items-center text-sm">
       <button
-        className="border-1 border-solid border-black px-1"
         disabled={!isTimerReady || timerStatus === 'ongoing'}
-        onClick={() => onUpdateTimerStatus('ongoing')}
+        onClick={() => {
+          console.log('shohei - boop');
+          onUpdateTimerStatus('ongoing');
+        }}
       >
-        start
+        <CirclePlayIcon className={clsx(scaleIcon)} />
       </button>
       <button
-        className="border-1 border-solid border-black px-1"
         disabled={['idle', 'paused', 'stopped'].includes(timerStatus)}
         onClick={() => onUpdateTimerStatus('paused')}
       >
-        pause
+        <CirclePauseIcon className={clsx(scaleIcon)} />
       </button>
       <button
-        className="border-1 border-solid border-black px-1"
         disabled={!isResettable}
         onClick={() => onUpdateTimerStatus('reset')}
       >
-        reset
+        <RotateCcwIcon className={clsx(scaleIcon2)} />
       </button>
       <button
-        className="border-1 border-solid border-black px-1"
+        className={clsx(
+          'bg-zinc-800 text-white capitalize tracking-wide rounded-4xl px-2 py-[1.5px] font-semibold text-xs h-[68%]'
+        )}
         disabled={timerStatus === 'ongoing'}
         onClick={onClear}
       >
         clear
       </button>
       <div
-        style={{
-          display: 'flex',
-          gap: '5px',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
+        className={clsx(
+          'flex justify-center items-center rounded-full',
+          repeat ? 'bg-blue-600' : 'bg-white',
+          repeat ? 'text-white' : 'text-black'
+        )}
       >
-        <input
-          type="checkbox"
-          name="repeat"
-          id="repeat"
-          checked={repeat}
-          onChange={onRepeat}
-        />
-        <label htmlFor="repeat" className="mt-[-2px]">
-          repeat
-        </label>
+        <Repeat2Icon className={clsx(scaleIcon2)} onClick={onRepeat} />
       </div>
     </div>
   );

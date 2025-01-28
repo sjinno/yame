@@ -7,7 +7,7 @@ interface Props {
 
 export function Container({ children }: Props) {
   return (
-    <div className="w-[420px] mx-auto">
+    <div className="mx-auto my-4 container">
       {React.Children.map(children, (child) => (
         <div>{child}</div>
       ))}

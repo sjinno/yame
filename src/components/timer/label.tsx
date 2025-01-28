@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-interface Props {
+export interface LabelProps {
   label: string;
   labelReadonly: boolean;
   onLabelUpdate: (label: string) => void;
@@ -12,7 +12,7 @@ export function Label({
   labelReadonly,
   onLabelUpdate,
   onReadonlyUpdate,
-}: Props) {
+}: LabelProps) {
   return (
     <input
       type="text"
@@ -27,9 +27,9 @@ export function Label({
       }
       autoCorrect="off"
       className={clsx(
-        'text-center w-[80%] mx-auto my-1 py-1',
+        'text-center w-full py-0.5',
         'border-1 border-solid border-zinc-600',
-        'focus:outline-1 focus:outline-solid focus:outline-blue-600'
+        'focus:outline-1 focus:outline-solid focus:outline-blue-600 focus:border-transparent focus:outline-offset-0'
       )}
     />
   );

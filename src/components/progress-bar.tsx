@@ -7,9 +7,9 @@ interface Props {
 
 export function ProgressBar({ hms, originalHms }: Props) {
   return (
-    <div className="w-[calc(100%-2px)] bg-gray-200 rounded-full h-1.5 dark:bg-gray-700 mt-2 ml-0.5">
+    <div className="w-[55%] bg-white rounded-full h-1 dark:bg-gray-700">
       <div
-        className="bg-blue-600 h-1.5 rounded-full"
+        className="bg-blue-600 h-1 rounded-full"
         style={{ width: `${calcProgress(hms, originalHms)}%` }}
       ></div>
     </div>

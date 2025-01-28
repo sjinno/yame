@@ -5,6 +5,7 @@ import { Hms, Timer as TimerType } from '../../types';
 import { Timer } from '../timer/timer';
 import { TimersStore } from '../../store';
 import { Container } from './container';
+import { AlarmClockPlusIcon } from 'lucide-react';
 
 export function Timers() {
   const [timersStore, setTimersStore] = useState<TimersStore | undefined>(
@@ -78,6 +79,14 @@ export function Timers() {
 
   return (
     <>
+      <div className="w-10 h-10 mx-auto my-6">
+        <button
+          className="w-full h-full flex justify-center items-center rounded-full bg-zinc-800 text-white"
+          onClick={addTimer}
+        >
+          <AlarmClockPlusIcon className="inline-block scale-95" />
+        </button>
+      </div>
       <Container>
         {timers.length > 0 &&
           timers.map((timer) => (
@@ -89,14 +98,6 @@ export function Timers() {
             />
           ))}
       </Container>
-      <div className="text-center">
-        <button
-          className="border-1 border-solid border-black p-1.5"
-          onClick={addTimer}
-        >
-          add a new timer
-        </button>
-      </div>
     </>
   );
 }

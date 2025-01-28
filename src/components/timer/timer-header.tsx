@@ -1,27 +1,19 @@
-import clsx from 'clsx';
-import { Label } from './label';
-
-export interface LabelProps {
-  label: string;
-  labelReadonly: boolean;
-  updateLabel: (label: string) => void;
-  updateLabelReadonly: (readonly: boolean) => void;
-}
+import { Label, LabelProps } from './label';
 
 export function TimerHeader({
   label,
   labelReadonly,
-  updateLabel,
-  updateLabelReadonly,
+  onLabelUpdate,
+  onReadonlyUpdate,
 }: LabelProps) {
   return (
     <div className="relative h-full">
-      <div className="h-full flex justify-center align-middle">
+      <div className="w-[80%] h-full flex justify-center items-center mx-auto">
         <Label
           label={label}
           labelReadonly={labelReadonly}
-          onLabelUpdate={updateLabel}
-          onReadonlyUpdate={updateLabelReadonly}
+          onLabelUpdate={onLabelUpdate}
+          onReadonlyUpdate={onReadonlyUpdate}
         />
       </div>
     </div>
