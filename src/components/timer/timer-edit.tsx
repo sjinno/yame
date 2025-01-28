@@ -22,7 +22,7 @@ interface Props {
   onUpdateTimerStatus: (status: TimerStatus) => void;
 }
 
-export function Hms({
+export function TimerEdit({
   repeat,
   typing,
   timerStatus,

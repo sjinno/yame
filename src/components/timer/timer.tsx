@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 
 import { Controller } from './controller';
-import { formatDuration } from '../../utils/timer';
-import { Hms } from './hms';
+import { TimerEdit } from './timer-edit';
 import { Hms as HmsType, TimerStatus } from '../../types';
 import { Label } from './label';
-import { ProgressBar } from '../progress-bar';
 import { useDebounce } from '../../hooks';
 import clsx from 'clsx';
+import { TimerDisplay } from './timer-display';
 
 export type TimerField = 'label' | 'hours' | 'minutes' | 'seconds';
 
@@ -91,27 +90,19 @@ export function Timer({
           onReadonlyUpdate={updateLabelReadonly}
         />
         <div>
-          <div className="my-1.5">
-            <div className="text-xs ml-0.5">time remaining:</div>
-            <div className="text-5xl mt-0.5">
-              {formatDuration(hms.hours ?? 0)}:
-              {formatDuration(hms.minutes ?? 0)}:
-              {formatDuration(hms.seconds ?? 0)}
-            </div>
-          </div>
-          <ProgressBar hms={hms} originalHms={originalHms} />
+          <TimerDisplay hms={hms} originalHms={originalHms} />
+          <TimerEdit
+            repeat={repeat}
+            typing={typing}
+            timerStatus={timerStatus}
+            hms={hms}
+            originalHms={originalHms}
+            setHms={setHms}
+            setOriginalHms={setOriginalHms}
+            onUpdateTimerStatus={updateTimerStatus}
+            onUpdateTyping={updateTyping}
+          />
         </div>
-        <Hms
-          repeat={repeat}
-          typing={typing}
-          timerStatus={timerStatus}
-          hms={hms}
-          originalHms={originalHms}
-          setHms={setHms}
-          setOriginalHms={setOriginalHms}
-          onUpdateTimerStatus={updateTimerStatus}
-          onUpdateTyping={updateTyping}
-        />
         <Controller
           isTimerReady={isTimerReady}
           isResettable={isTimerResettable}
